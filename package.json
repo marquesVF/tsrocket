@@ -1,0 +1,20 @@
+{
+  "name": "tsrocket",
+  "version": "0.0.1",
+  "description": "A bootstrap for Typescript based web API",
+  "main": "index.js",
+  "author": "Vinícius de F. Marques",
+  "license": "MIT",
+  "bin": {
+    "tsrocket": "./bin/cli.js"
+  },
+  "dependencies": {
+    "handlebars": "4.7.3",
+    "prompt-sync": "4.2.0",
+    "winston": "3.2.1",
+    "yargs": "15.3.0"
+  },
+  "engines": {
+    "node": ">=12.14.1"
+  }
+}
