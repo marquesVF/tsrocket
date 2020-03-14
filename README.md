@@ -35,7 +35,7 @@ _*more to come_
 
 To create an application:
 
-`rockets new my-awesome-application`
+`rockets new my-awesome-app`
 
 _*more to come_
 
@@ -51,4 +51,23 @@ _*more to come_
 
 ## Contributing
 
-*coming soon*
+1. Clone the repository
+2. Run `npm link  .` from inside the repository folder
+3. Run `npx rockets new <APP NAME>`
+
+### Milestone version 0.1.0
+
+- [x] Generate the aplication barebones
+- [ ] Configure eslint for the project
+- [ ] Add eslint scaffolding
+- [ ] Add model scaffolding
+- [ ] Add repository scaffolding
+- [ ] Add service scaffolding
+- [ ] Add API route management algorithms
+- [ ] Add app management (start and stop) algorithms
+- [ ] Add database migration based on model changes
+- [ ] Configure semantic release
+- [ ] Write tests
+- [ ] Write useful guides and project documentations
+
+_*more to come_
