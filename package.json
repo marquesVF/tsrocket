@@ -1,12 +1,12 @@
 {
-  "name": "tsrocket",
+  "name": "rockets",
   "version": "0.0.1",
   "description": "A bootstrap for Typescript based web API",
   "main": "index.js",
   "author": "Vinícius de F. Marques",
   "license": "MIT",
   "bin": {
-    "tsrocket": "./bin/cli.js"
+    "rockets": "./bin/cli.js"
   },
   "dependencies": {
     "handlebars": "4.7.3",
