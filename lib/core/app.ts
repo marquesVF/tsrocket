@@ -18,6 +18,7 @@ export class App {
     }
 
     static registerGet(path: string, callback: Function) {
+        logger.debug(`Registering ${path}`)
         App.expressApp.get(path, async (req, res) => {
             let response
             try {

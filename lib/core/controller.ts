@@ -18,3 +18,5 @@ export async function generateRoutes(controllersPath?: string) {
 
     await all(filePaths.map(importController))
 }
+
+export interface Controller { }

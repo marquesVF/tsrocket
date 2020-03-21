@@ -6,15 +6,18 @@
   "author": "{{ appAuthor }}",
   "license": "{{ appLicence }}",
   "scripts": {
+    "serve": "node build/app.js",
+    "build": "tsc",
     "dev": "ts-node-dev --respawn --transpileOnly src/app.ts"
   },
   "dependencies": {
-    "typedi": "0.8.0",
-    "typescript": "3.8.3"
+    "typedi": "0.8.0"
   },
   "devDependencies": {
-    "ts-node-dev": "1.0.0-pre.44"
-  }
+    "ts-node-dev": "1.0.0-pre.44",
+    "typescript": "3.8.3",
+    "yarn": "1.22.4"
+  },
   "engines": {
     "node": ">=12.14.1"
   }

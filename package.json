@@ -34,13 +34,14 @@
     "handlebars": "4.7.3",
     "prompt-sync": "4.2.0",
     "winston": "3.2.1",
-    "yargs": "15.3.0"
+    "yargs": "15.3.0",
+    "yarn": "1.22.4"
   },
   "engines": {
     "node": ">=12.14.1"
   },
   "devDependencies": {
-    "typescript": "3.8.3",
-    "yarn": "1.22.4"
+    "change-case": "4.1.1",
+    "typescript": "3.8.3"
   }
 }
