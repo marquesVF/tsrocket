@@ -5,10 +5,16 @@
   "main": "index.js",
   "author": "{{ appAuthor }}",
   "license": "{{ appLicence }}",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpileOnly src/app.ts"
+  },
   "dependencies": {
     "typedi": "0.8.0",
     "typescript": "3.8.3"
   },
+  "devDependencies": {
+    "ts-node-dev": "1.0.0-pre.44"
+  }
   "engines": {
     "node": ">=12.14.1"
   }

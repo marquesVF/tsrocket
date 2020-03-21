@@ -1,6 +1,6 @@
-const { createLogger, format, transports } = require('winston')
+import { createLogger, format, transports } from 'winston'
 
-function logger(level) {
+function logger(level: string) {
     const formats = [
         format.colorize(),
         format.splat(),
@@ -14,4 +14,5 @@ function logger(level) {
     })
 }
 
-module.exports = logger
+// TODO logger level should be a parameter
+export default logger('debug')
