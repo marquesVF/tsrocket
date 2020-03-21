@@ -1,0 +1,10 @@
+import { GET, Context, Response, Controller } from "tsrocket"
+
+export default class {{ name }}Controller implements Controller{
+
+    @GET('/{{ path }}')
+    async index(_: Context): Promise<Response> {
+        return 'Hello world from /{{ path }}'
+    }
+
+}

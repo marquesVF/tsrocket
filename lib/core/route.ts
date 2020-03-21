@@ -1,25 +1,17 @@
 import { Request } from "express"
 import { App } from "./app"
+import { Controller } from "./controller"
 
 export type RouteMethod = 'get' | 'post'
 
-function route(method: RouteMethod, targetPath?: string) {
+export function GET(path: string) {
     return function(
-        _: any,
-        propertyKey: string,
+        _: Controller,
+        __: string,
         descriptor: PropertyDescriptor
     ) {
-        const path = targetPath ?? propertyKey
-        const handler = descriptor.value
-
-        if (method === 'get') {
-            App.registerGet(path, handler)
-        }
+        App.registerGet(path, descriptor.value)
     }
-}
-
-export function GET(targetPath?: string) {
-    return route('get', targetPath)
 }
 
 export type Context = {
