@@ -48,7 +48,7 @@ export class App {
     async listen(port?: number) {
         generateRoutes(this.options?.controllersPath)
 
-        const serverPort = port ?? 3003
+        const serverPort = port ?? 3000
 
         logger.info(`Listenning at port ${serverPort}`)
         App.expressApp.listen(serverPort)

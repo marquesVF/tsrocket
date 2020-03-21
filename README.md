@@ -16,7 +16,6 @@ my-awesome-app/
 │   ├── models/
 │   ├── services/
 │   ├── repositories/
-│   ├── routes.ts
 │   ├── database.ts
 │   └── app.ts
 ├── package.json
@@ -33,15 +32,40 @@ A service is based on [typedi](https://github.com/typestack/typedi) dependency i
 `tsrocket` uses [typeorm-typedi-extensions](https://github.com/typeorm/typeorm-typedi-extensions)
 under the hood to integrate repositories with services.
 
-_*more to come_
-
-## Usage
+## Quick Start
 
 To create an application:
 
-`rockets new my-awesome-app`
+`tsrocket new my-awesome-app`
 
-_*more to come_
+Type `cd my-awesome-app` and `tsrocket gen controller home` to generate a new controller called `HomeController`:
+
+```typescript
+#src/controllers/home.ts
+import {
+    GET,
+    Context,
+    Response,
+    Controller
+} from "tsrocket"
+
+export default class HomeController implements Controller {
+
+    @GET('/home')
+    async index(_: Context): Promise<Response> {
+        return 'Hello world from /home'
+    }
+
+}
+```
+
+Run `curl http://localhost:3000/home`:
+
+```json
+{
+    "data":"Hello world from /home"
+}
+```
 
 ## Motivation
 
@@ -53,7 +77,6 @@ _*more to come_
 
 1. Clone the repository
 2. Run `npm link  .` from inside the repository folder
-3. Run `npx rockets new <APP NAME>`
 
 ### Commit guidelines
 
@@ -86,6 +109,7 @@ Must be one of the following:
 ### Milestone version 0.1.0
 
 - [x] Generate the aplication barebones
+- [x] Add Controller scaffolding
 - [ ] Configure eslint for the project
 - [ ] Add eslint scaffolding
 - [ ] Add model scaffolding
