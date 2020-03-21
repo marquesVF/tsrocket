@@ -19,8 +19,9 @@
     "definition": "./lib/index.d.ts"
   },
   "scripts": {
+    "watch": "tsc --watch",
     "build": "tsc",
-    "prepare": "npm run build"
+    "prepare": "yarn build"
   },
   "bin": {
     "tsrocket": "./bin/tsrocket"
@@ -39,6 +40,7 @@
     "node": ">=12.14.1"
   },
   "devDependencies": {
-    "typescript": "3.8.3"
+    "typescript": "3.8.3",
+    "yarn": "1.22.4"
   }
 }
