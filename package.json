@@ -1,14 +1,35 @@
 {
   "name": "tsrocket",
   "version": "0.0.1",
-  "description": "A bootstrap for Typescript based web API",
-  "main": "index.js",
+  "description": "Prototype web APIs using Typescript with scaffolding",
+  "files": [
+    "bin",
+    "lib",
+    "dist"
+  ],
   "author": "Vinícius de F. Marques",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/marquesVF/tsrocket"
+  },
   "license": "MIT",
+  "main": "dist",
+  "types": "dist/index.d.ts",
+  "typescript": {
+    "definition": "./lib/index.d.ts"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build"
+  },
   "bin": {
-    "tsrocket": "./bin/cli.js"
+    "tsrocket": "./bin/tsrocket"
   },
   "dependencies": {
+    "@types/bluebird": "3.5.30",
+    "@types/express": "4.17.3",
+    "bluebird": "3.7.2",
+    "express": "4.17.1",
     "handlebars": "4.7.3",
     "prompt-sync": "4.2.0",
     "winston": "3.2.1",
@@ -16,5 +37,8 @@
   },
   "engines": {
     "node": ">=12.14.1"
+  },
+  "devDependencies": {
+    "typescript": "3.8.3"
   }
 }

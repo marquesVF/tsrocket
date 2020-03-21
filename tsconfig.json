@@ -1,26 +1,27 @@
 {
     "compilerOptions": {
-        "outDir": "build/",
+        "experimentalDecorators": true,
+        "outDir": "dist/",
         "baseUrl": ".",
         "declaration": true,
         "typeRoots": ["node_modules/@types"],
         "allowJs": false,
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
-        "lib": ["es7"],
+        "lib": ["es2018"],
         "moduleResolution": "node",
         "strict": true,
         "module": "commonjs",
-        "target": "es6",
+        "target": "es2018",
         "strictNullChecks": true,
         "noImplicitThis": true,
         "noImplicitReturns": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "skipLibCheck": true,
-        "noImplicitAny": true,
-        "experimentalDecorators": true
+        "noImplicitAny": true
     },
-    "include": ["./src/*"],
-    "exclude": ["node_modules"]
+    "include": [
+        "lib"
+    ]
 }

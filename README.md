@@ -12,6 +12,7 @@ An `tsrocket` application is structured as follows:
 ```
 my-awesome-app/
 ├── src/
+│   ├── controllers/
 │   ├── models/
 │   ├── services/
 │   ├── repositories/
@@ -48,15 +49,39 @@ _*more to come_
 
 _*more to come_
 
-### Guidelines
-
-*coming soon*
-
 ## Contributing
 
 1. Clone the repository
 2. Run `npm link  .` from inside the repository folder
 3. Run `npx rockets new <APP NAME>`
+
+### Commit guidelines
+
+`tsrocket` commit message format is based on [Angular's community](https://github.com/angular/angular/blob/master/CONTRIBUTING.md).
+
+Each commit message consists of a **header** and a **body**. The header has a special format that includes a **type**, a **scope** and a **subject**:
+
+```
+<type>(<scope>): <subject>
+<BLANK LINE>
+<body>
+```
+
+The **header** is mandatory and the **scope** of the header is optional.
+
+#### Type
+
+Must be one of the following:
+
+* **build**: Changes that affect the build system or external dependencies (example scopes: gulp, broccoli, npm)
+* **ci**: Changes to our CI configuration files and scripts (example scopes: Circle, BrowserStack, SauceLabs)
+* **docs**: Documentation only changes
+* **feat**: A new feature
+* **fix**: A bug fix
+* **perf**: A code change that improves performance
+* **refactor**: A code change that neither fixes a bug nor adds a feature
+* **style**: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
+* **test**: Adding missing tests or correcting existing tests
 
 ### Milestone version 0.1.0
 
