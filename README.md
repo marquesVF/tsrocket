@@ -59,7 +59,7 @@ export default class HomeController implements Controller {
 }
 ```
 
-Run `curl http://localhost:3000/home`:
+Run `yarn dev` to starts the server and `curl http://localhost:3000/home`:
 
 ```json
 {
