@@ -4,7 +4,7 @@ function logger(level: string) {
     const formats = [
         format.colorize(),
         format.splat(),
-        format.simple(),
+        format.simple()
     ]
 
     return createLogger({

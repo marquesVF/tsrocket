@@ -20,17 +20,11 @@ export class App {
     static registerGet(path: string, callback: Function) {
         logger.debug(`Registering ${path}`)
         App.expressApp.get(path, async (req, res) => {
-            let response
-            try {
-                const context: Context = {
-                    req,
-                    args: {}
-                }
-                response = await callback(context)
-            } catch (err) {
-                // TODO handle error properly
-                throw err
+            const context: Context = {
+                req,
+                args: {}
             }
+            const response = await callback(context)
 
             if (response) {
                 const jsonReponse = {
@@ -46,7 +40,7 @@ export class App {
     }
 
     async listen(port?: number) {
-        generateRoutes(this.options?.controllersPath)
+        await generateRoutes(this.options?.controllersPath)
 
         const serverPort = port ?? 3000
 

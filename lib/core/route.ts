@@ -1,11 +1,12 @@
-import { Request } from "express"
-import { App } from "./app"
-import { Controller } from "./controller"
+import { Request } from 'express'
+
+import { App } from './app'
+import { Controller } from './controller'
 
 export type RouteMethod = 'get' | 'post'
 
 export function GET(path: string) {
-    return function(
+    return function (
         _: Controller,
         __: string,
         descriptor: PropertyDescriptor
@@ -19,4 +20,4 @@ export type Context = {
     args: Record<string, string>
 }
 
-export type Response = string | Object
+export type Response = string | Record<string, any>

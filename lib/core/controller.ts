@@ -1,5 +1,7 @@
 import { readdirSync } from 'fs'
+
 import { all } from 'bluebird'
+
 import logger from './logger'
 
 const DEFAULT_CONTROLLERS_PATH = `${process.cwd()}/src/controllers`
