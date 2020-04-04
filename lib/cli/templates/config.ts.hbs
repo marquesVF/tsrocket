@@ -1,0 +1,19 @@
+import {
+    SqliteConnectionOptions
+} from 'typeorm/driver/sqlite/SqliteConnectionOptions'
+import { ServerConfiguration, DEVELOPMENT_DATABASE } from 'tsrocket'
+
+const database: SqliteConnectionOptions = {
+    type: 'sqlite',
+    database: DEVELOPMENT_DATABASE,
+    entities: ['models/**/*.ts']
+    migrations: ['migrations/**/*.ts']
+}
+
+const config: ServerConfiguration = {
+    port: 3000,
+    constrollers: ['controllers/**/*.ts'],
+    database 
+}
+
+export default config
