@@ -25,7 +25,7 @@
     "lint": "eslint --ext .ts --cache lib"
   },
   "bin": {
-    "tsrocket": "./bin/tsrocket"
+    "tsr": "./bin/tsr"
   },
   "tags": [
     "typescript",
