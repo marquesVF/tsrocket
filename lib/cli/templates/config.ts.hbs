@@ -1,19 +1,30 @@
+import "reflect-metadata"
+
 import {
     SqliteConnectionOptions
 } from 'typeorm/driver/sqlite/SqliteConnectionOptions'
 import { ServerConfiguration, DEVELOPMENT_DATABASE } from 'tsrocket'
+import { useContainer, createConnection } from "typeorm"
+import Container from "typedi"
+
+useContainer(Container)
 
 const database: SqliteConnectionOptions = {
     type: 'sqlite',
     database: DEVELOPMENT_DATABASE,
-    entities: ['models/**/*.ts']
-    migrations: ['migrations/**/*.ts']
+    entities: ['src/models/*.ts'],
+    migrations: ['src/migrations/*.ts'],
+    cli: {
+        migrationsDir: 'src/migrations'
+    }
 }
+
+createConnection(database)
 
 const config: ServerConfiguration = {
     port: 3000,
-    constrollers: ['controllers/**/*.ts'],
-    database 
+    constrollers: ['src/controllers/*.ts'],
+    database
 }
 
 export default config

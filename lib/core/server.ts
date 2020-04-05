@@ -1,17 +1,14 @@
 import express from 'express'
-import { useContainer, createConnection, Connection } from 'typeorm'
-import Container from 'typedi'
 
 import { ServerConfiguration } from '../types'
 
+import { loadControllers } from './utils/loaders'
 import logger from './logger'
-
-useContainer(Container)
+import { getMetadataStorage } from './metadata/metadata-storage'
 
 export class Server {
 
     private static expressApp = express()
-    private connection?: Connection
     private config: ServerConfiguration
 
     constructor(config: ServerConfiguration) {
@@ -19,17 +16,13 @@ export class Server {
     }
 
     async init() {
-        this.connection = await createConnection(this.config.database)
+        await loadControllers(this.config.constrollers)
+        getMetadataStorage().buildRoutes(Server.expressApp)
     }
 
     listen() {
-        if (this.connection) {
-            logger.info(`Listenning at port ${this.config.port}`)
-            Server.expressApp.listen(this.config.port)
-        } else {
-            logger.error('No database connection')
-            throw new Error('DB_CONNECTION')
-        }
+        logger.info(`Listenning at port ${this.config.port}`)
+        Server.expressApp.listen(this.config.port)
     }
 
 }
