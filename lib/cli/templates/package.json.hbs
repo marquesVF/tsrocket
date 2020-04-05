@@ -6,18 +6,21 @@
   "author": "{{ appAuthor }}",
   "license": "{{ appLicence }}",
   "scripts": {
-    "serve": "node build/app.js",
+    "serve": "node build/server.js",
     "build": "tsc",
-    "dev": "ts-node-dev --respawn --transpileOnly src/app.ts"
+    "start": "ts-node src/index.ts",
+    "dev": "ts-node-dev --respawn --transpileOnly src/server.ts",
+    "dev:orm": "TS_NODE_PROJECT=tsconfig.ts-node.json TS_NODE_TRANSPILE_ONLY=true ts-node ./node_modules/typeorm/cli.js"
   },
   "dependencies": {
-    "typedi": "0.8.0"
-  },
-  "dependencies": {
-    "typedi": "0.8.0"
+    "reflect-metadata": "^0.1.10",
+    "typedi": "0.8.0",
+    "typeorm": "0.2.24"
   },
   "devDependencies": {
+    "sqlite3": "4.1.1",
     "ts-node-dev": "1.0.0-pre.44",
+    "typeorm": "0.2.24",
     "typescript": "3.8.3",
     "yarn": "1.22.4"
   },

@@ -1,0 +1,14 @@
+import { Entity, PrimaryColumn, Column } from 'typeorm'
+
+@Entity('{{model}}')
+export default class {{modelName}} {
+
+    @PrimaryColumn('uuid')
+    id: string
+
+    {{#with columns}}
+        @Column('{{dbType}}')
+        {{name}}: {{type}}
+    {{/with}}
+
+}
