@@ -1,10 +1,23 @@
 import { Controller, GET, RestController } from 'tsrocket'
+{{#each services}}
+import {{this.name}}Service from '../services/{{this.variable}}'
+{{/each}}
 
 @Controller('/{{path}}')
 export default class {{name}}Controller extends RestController {
 
+    {{#if services}}
+    constructor(
+        {{#each services}}
+        private {{this.variable}}Service: {{this.name}}Service,
+        {{/each}}
+    ) {
+        super()
+    }
+
+    {{/if}}
     @GET('/')
-    index(): string {
+    index() {
         return 'Hello world from /{{path}}'
     }
 

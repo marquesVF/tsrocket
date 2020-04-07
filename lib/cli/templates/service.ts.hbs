@@ -1,6 +1,17 @@
 import { Service } from 'typedi'
+{{#each services}}
+import {{this.name}}Service from './{{this.variable}}'
+{{/each}}
 
 @Service()
 export default class {{ name }}Service {
 
+    {{#if services}}
+    constructor(
+        {{#each services}}
+        private {{this.variable}}Service: {{this.name}}Service,
+        {{/each}}
+    ) { }
+
+    {{/if}}
 }
