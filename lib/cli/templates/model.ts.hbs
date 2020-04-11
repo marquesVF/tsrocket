@@ -1,14 +1,14 @@
-import { Entity, PrimaryColumn, Column } from 'typeorm'
+import { Entity, {{#if columns}}Column, {{/if}}PrimaryGeneratedColumn } from 'typeorm'
 
-@Entity('{{model}}')
-export default class {{modelName}} {
+@Entity()
+export default class User {
 
-    @PrimaryColumn('uuid')
-    id: string
+    @PrimaryGeneratedColumn()
+    id: number
 
-    {{#with columns}}
-        @Column('{{dbType}}')
-        {{name}}: {{type}}
-    {{/with}}
+    {{#each columns}}
+    @Column({{#if this.nullable}}{ nullable:true }{{/if}})
+    {{this.name}}{{#if this.nullable}}?{{/if}}: {{this.type}}
 
+    {{/each}}
 }
