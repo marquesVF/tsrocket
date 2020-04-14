@@ -21,7 +21,7 @@ export class Server {
     }
 
     listen() {
-        logger.info(`Listenning at port ${this.config.port}`)
+        logger.info(`listenning at port ${this.config.port}`)
         Server.expressApp.listen(this.config.port)
     }
 
