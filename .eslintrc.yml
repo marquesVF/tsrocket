@@ -127,6 +127,7 @@ rules:
   "@typescript-eslint/no-misused-promises": 'off'
   "@typescript-eslint/no-use-before-define":
     [error, { functions: false, classes: false }]
+  "@typescript-eslint/ban-types": 'off'
 
   import/order: ["error", { newlines-between: always }]
   import/no-named-as-default: 'off'

@@ -6,7 +6,7 @@ export type Context = {
     req: Request
 }
 
-export class RestController {
+export abstract class RestController {
 
     [key: string]: any
 

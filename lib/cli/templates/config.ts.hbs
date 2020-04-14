@@ -4,10 +4,7 @@ import {
     SqliteConnectionOptions
 } from 'typeorm/driver/sqlite/SqliteConnectionOptions'
 import { ServerConfiguration, DEVELOPMENT_DATABASE } from 'tsrocket'
-import { useContainer, createConnection } from "typeorm"
-import Container from "typedi"
-
-useContainer(Container)
+import { createConnection } from "typeorm"
 
 const database: SqliteConnectionOptions = {
     type: 'sqlite',
