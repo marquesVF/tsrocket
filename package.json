@@ -43,7 +43,7 @@
     "bluebird": "3.7.2",
     "express": "4.17.1",
     "glob": "7.1.6",
-    "handlebars": "4.7.3",
+    "handlebars": "^4.7.6",
     "prompt-sync": "4.2.0",
     "reflect-metadata": "0.1.13",
     "typeorm": "0.2.24",
