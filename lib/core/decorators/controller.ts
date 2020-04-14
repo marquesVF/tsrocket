@@ -8,12 +8,3 @@ export function Controller(optionalPath?: string): ClassDecorator {
             .storeControllerMetadata({ path, controller, target })
     }
 }
-
-export function GET(path: string): MethodDecorator {
-    return (prototype, rawMethod) => {
-        const method = rawMethod as string
-        const controller = prototype.constructor.name
-        getMetadataStorage()
-            .storeGetRouteMetadata({ path, method, controller })
-    }
-}

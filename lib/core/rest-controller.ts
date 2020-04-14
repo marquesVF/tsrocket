@@ -1,9 +1,7 @@
-import { Request } from 'express'
-
 export type RestResponse = string | object
 
-export type Context = {
-    req: Request
+export type Context<T> = {
+    params?: T
 }
 
 export abstract class RestController {

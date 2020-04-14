@@ -1,4 +1,4 @@
-import { Express, Router } from 'express'
+import { Express, Router, Request, Response } from 'express'
 
 import { sanitizePath } from '../utils/sanitizers'
 import { RestController } from '../rest-controller'
@@ -10,35 +10,45 @@ export class MetadataStorage {
 
     private static _storage = new MetadataStorage()
     controllers: Record<string, ControllerMetadata> = {}
-    getRoutes: RouteMetadata[] = []
+    routes: RouteMetadata[] = []
+
+    private buildRoute(route: RouteMetadata) {
+        const { controller, propertyKey, path, method } = route
+        const router = Router()
+        const {
+            path: controllerPath,
+            target
+        } = this.controllers[controller]
+
+        const controllerObject: RestController = Container.get(target)
+        // TODO improve erro handling
+        const handler = async (req: Request, res: Response) => {
+            const args = { params: req.body }
+            const result = await controllerObject[propertyKey](args)
+            const response = { data: result }
+
+            res.send(response)
+        }
+
+        router[method](path, handler)
+
+        return { router, path: controllerPath }
+    }
 
     storeControllerMetadata(data: ControllerMetadata) {
         // TODO don't allow duplicated paths
         this.controllers[data.controller] = data
     }
 
-    storeGetRouteMetadata(data: RouteMetadata) {
-        this.getRoutes.push(data)
+    storeRouteMetadata(data: RouteMetadata) {
+        this.routes.push(data)
     }
 
     buildRoutes(app: Express) {
-        this.getRoutes.forEach(route => {
-            const { controller, method, path } = route
-            const router = Router()
-            const {
-                path: controllerPath,
-                target
-            } = this.controllers[controller]
+        this.routes.forEach(route => {
+            const { router, path } = this.buildRoute(route)
 
-            const controllerObject: RestController = Container.get(target)
-            router.get(path, async (req, res) => {
-                const result = await controllerObject[method]({ req })
-                const response = { data: result }
-
-                res.send(response)
-            })
-
-            app.use(sanitizePath(controllerPath), router)
+            app.use(sanitizePath(path), router)
         })
     }
 
