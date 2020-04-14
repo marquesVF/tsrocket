@@ -4,7 +4,6 @@ import {
     SqliteConnectionOptions
 } from 'typeorm/driver/sqlite/SqliteConnectionOptions'
 import { ServerConfiguration, DEVELOPMENT_DATABASE } from 'tsrocket'
-import { createConnection } from "typeorm"
 
 const database: SqliteConnectionOptions = {
     type: 'sqlite',
@@ -15,8 +14,6 @@ const database: SqliteConnectionOptions = {
         migrationsDir: 'src/migrations'
     }
 }
-
-createConnection(database)
 
 const config: ServerConfiguration = {
     port: 3000,

@@ -1,10 +1,12 @@
 import express from 'express'
+import { Connection } from 'typeorm'
 
 import { ServerConfiguration } from '../types'
 
 import { loadControllers } from './utils/loaders'
 import logger from './logger'
 import { getMetadataStorage } from './metadata/metadata-storage'
+import { Container } from './container'
 
 export class Server {
 
@@ -15,7 +17,9 @@ export class Server {
         this.config = config
     }
 
-    async init() {
+    async init(connection: Connection) {
+        Container.set('connection', connection)
+
         await loadControllers(this.config.constrollers)
         getMetadataStorage().buildRoutes(Server.expressApp)
     }
