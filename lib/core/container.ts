@@ -1,5 +1,5 @@
 import { InjectionHandler } from './types/injection-handler'
-import { ServiceIdentifier } from './types/service-identifier'
+import { Identifier } from './types/identifier'
 import { ContainerMetadata } from './metadata/definitions'
 
 export class Container {
@@ -12,17 +12,17 @@ export class Container {
      * it sets to an existing tsrocket Service instance with the associated id.
      *
      * @static
-     * @param {ServiceIdentifier} id
+     * @param {Identifier} id
      * @param {*} [instance]
      */
-    static set(id: ServiceIdentifier, instance?: any) {
+    static set(id: Identifier, instance?: any) {
         this.services.push({
             id,
             instance: instance ?? Container.get(id)
         })
     }
 
-    static get(id: ServiceIdentifier): any {
+    static get(id: Identifier): any {
         const serviceMetadata = this
             .services
             .find(service => service.id === id)
