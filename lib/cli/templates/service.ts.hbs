@@ -4,11 +4,11 @@ import {{this.name}}Service from './{{this.variable}}'
 {{/each}}
 
 @Service()
-export default class {{ name }}Service implements BaseService {
+export default class {{ name }}Service {
 
     {{#each services}}
-    @Inject()
+    @Inject({{this.name}}Service)
     private readonly {{this.variable}}Service: {{this.name}}Service
-    {{/each}}
 
+    {{/each}}
 }

@@ -1,4 +1,4 @@
-import { Controller, GET, RestController, Inject } from 'tsrocket'
+import { Controller, GET, RestController{{#if services}}, Inject{{/if}} } from 'tsrocket'
 {{#each services}}
 import {{this.name}}Service from '../services/{{this.variable}}'
 {{/each}}
@@ -7,7 +7,7 @@ import {{this.name}}Service from '../services/{{this.variable}}'
 export default class {{name}}Controller extends RestController {
 
     {{#each services}}
-    @Inject()
+    @Inject({{this.name}}Service)
     private readonly {{this.variable}}Service: {{this.name}}Service
 
     {{/each}}
