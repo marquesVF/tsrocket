@@ -13,6 +13,6 @@ export type RouteMetadata = {
 }
 
 export type ServiceMetadata = {
-    target: ServiceIdentifier
-    value: any
+    id: ServiceIdentifier
+    serviceInstance: any
 }

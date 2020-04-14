@@ -1,6 +1,6 @@
-export interface Handler {
+export interface InjectionHandler {
     target: any
     propertyName: string
     index?: number
-    value: () => any
+    instance: () => any
 }

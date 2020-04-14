@@ -6,7 +6,7 @@ export function Inject(value: Function): Function {
             target,
             propertyName,
             index,
-            value: Container.get(value)
+            instance: Container.get(value)
         })
     }
 }
