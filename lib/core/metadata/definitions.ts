@@ -12,7 +12,7 @@ export type RouteMetadata = {
     controller: string
 }
 
-export type ServiceMetadata = {
+export type ContainerMetadata = {
     id: ServiceIdentifier
-    serviceInstance: any
+    instance: any
 }

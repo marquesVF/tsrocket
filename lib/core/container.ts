@@ -1,14 +1,17 @@
 import { InjectionHandler } from './types/injection-handler'
 import { ServiceIdentifier } from './types/service-identifier'
-import { ServiceMetadata } from './metadata/definitions'
+import { ContainerMetadata } from './metadata/definitions'
 
 export class Container {
 
-    private static services: ServiceMetadata[] = []
+    private static services: ContainerMetadata[] = []
     private static handlers: InjectionHandler[] = []
 
-    static set(id: ServiceIdentifier) {
-        this.services.push({ id, serviceInstance: Container.get(id) })
+    static set(id: ServiceIdentifier, instance?: any) {
+        this.services.push({
+            id,
+            instance: instance ?? Container.get(id)
+        })
     }
 
     static get(id: ServiceIdentifier): any {
@@ -19,9 +22,9 @@ export class Container {
         let serviceInstance: any
         if (!serviceMetadata) {
             serviceInstance = new id()
-            this.services.push({ id, serviceInstance })
+            this.services.push({ id, instance: serviceInstance })
         } else {
-            serviceInstance = serviceMetadata.serviceInstance
+            serviceInstance = serviceMetadata.instance
         }
 
         const registeredHandlers = this.handlers.filter(handler =>

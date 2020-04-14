@@ -1,9 +1,11 @@
 import { Server } from 'tsrocket'
 import config from './config'
+import { createConnection } from 'typeorm'
 
 async function main() {
+    const connection = await createConnection(config.database)
     const server = new Server(config)
-    await server.init()
+    await server.init(connection)
 
     server.listen()
 }
