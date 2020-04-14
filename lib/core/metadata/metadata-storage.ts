@@ -1,11 +1,10 @@
 import { Express, Router } from 'express'
-import Container from 'typedi'
 
 import { sanitizePath } from '../utils/sanitizers'
 import { RestController } from '../rest-controller'
+import { Container } from '../container'
 
-import { ControllerMetadata } from './definitions'
-import { RouteMetadata } from './definitions/route-metadata'
+import { ControllerMetadata, RouteMetadata } from './definitions'
 
 export class MetadataStorage {
 

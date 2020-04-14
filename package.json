@@ -46,7 +46,6 @@
     "handlebars": "4.7.3",
     "prompt-sync": "4.2.0",
     "reflect-metadata": "0.1.13",
-    "typedi": "0.8.0",
     "typeorm": "0.2.24",
     "winston": "3.2.1",
     "yargs": "15.3.0"

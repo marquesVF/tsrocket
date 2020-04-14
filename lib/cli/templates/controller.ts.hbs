@@ -1,4 +1,4 @@
-import { Controller, GET, RestController } from 'tsrocket'
+import { Controller, GET, RestController{{#if services}}, Inject{{/if}} } from 'tsrocket'
 {{#each services}}
 import {{this.name}}Service from '../services/{{this.variable}}'
 {{/each}}
@@ -6,16 +6,11 @@ import {{this.name}}Service from '../services/{{this.variable}}'
 @Controller('/{{path}}')
 export default class {{name}}Controller extends RestController {
 
-    {{#if services}}
-    constructor(
-        {{#each services}}
-        private {{this.variable}}Service: {{this.name}}Service,
-        {{/each}}
-    ) {
-        super()
-    }
+    {{#each services}}
+    @Inject({{this.name}}Service)
+    private readonly {{this.variable}}Service: {{this.name}}Service
 
-    {{/if}}
+    {{/each}}
     @GET('/')
     index() {
         return 'Hello world from /{{path}}'

@@ -1,7 +1,7 @@
 import { Entity, {{#if columns}}Column, {{/if}}PrimaryGeneratedColumn } from 'typeorm'
 
 @Entity()
-export default class User {
+export default class {{model}} {
 
     @PrimaryGeneratedColumn()
     id: number

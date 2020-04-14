@@ -1,4 +1,4 @@
-import { Service } from 'typedi'
+import { Service } from 'tsrocket'
 {{#each services}}
 import {{this.name}}Service from './{{this.variable}}'
 {{/each}}
@@ -6,12 +6,9 @@ import {{this.name}}Service from './{{this.variable}}'
 @Service()
 export default class {{ name }}Service {
 
-    {{#if services}}
-    constructor(
-        {{#each services}}
-        private {{this.variable}}Service: {{this.name}}Service,
-        {{/each}}
-    ) { }
+    {{#each services}}
+    @Inject({{this.name}}Service)
+    private readonly {{this.variable}}Service: {{this.name}}Service
 
-    {{/if}}
+    {{/each}}
 }
