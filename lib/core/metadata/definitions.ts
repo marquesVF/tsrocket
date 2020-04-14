@@ -1,4 +1,4 @@
-import { ServiceIdentifier } from '../types/service-identifier'
+import { Identifier } from '../types/identifier'
 
 export interface ControllerMetadata {
     path: string
@@ -13,6 +13,6 @@ export type RouteMetadata = {
 }
 
 export type ContainerMetadata = {
-    id: ServiceIdentifier
+    id: Identifier
     instance: any
 }

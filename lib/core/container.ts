@@ -7,6 +7,14 @@ export class Container {
     private static services: ContainerMetadata[] = []
     private static handlers: InjectionHandler[] = []
 
+    /**
+     * Set a Container instance to an id. If no instance is passed as argument
+     * it sets to an existing tsrocket Service instance with the associated id.
+     *
+     * @static
+     * @param {ServiceIdentifier} id
+     * @param {*} [instance]
+     */
     static set(id: ServiceIdentifier, instance?: any) {
         this.services.push({
             id,
