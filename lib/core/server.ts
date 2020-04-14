@@ -19,6 +19,8 @@ export class Server {
 
     async init(connection: Connection) {
         Container.set('connection', connection)
+        Server.expressApp.use(express.json())
+        Server.expressApp.use(express.urlencoded({ extended: true }))
 
         await loadControllers(this.config.constrollers)
         getMetadataStorage().buildRoutes(Server.expressApp)

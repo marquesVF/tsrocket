@@ -39,9 +39,9 @@ export class Container {
             handler.target.constructor === serviceInstance.constructor)
 
         registeredHandlers.forEach(handler => {
-            Object.defineProperty(serviceInstance, handler.propertyName, {
-                value: handler.instance
-            })
+            const { propertyName, instance } = handler
+
+            Reflect.set(serviceInstance, propertyName, instance)
         })
 
         return serviceInstance
