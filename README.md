@@ -1,17 +1,18 @@
-# tsrocket
-Prototype web APIs using Typescript with scaffolding.
+# tsrocket 🚀
+Ease up web APIs development in Typescript with scaffolding, dependency injection and some sweet decorators 🍭
 
 ## What's tsrocket?
 
-`tsrocket` is a framework and scaffolding tool that helps developers to easily propotype web APIs. An `tsrocket` project has four layers and is structured as follows:
+`tsrocket` is composed of a lightweight REST framework, dependecy injection, cli and code generation. An `tsrocket` project has four layers (controllers, models, repositories and services) and is structured as follows:
 
 ```
 my-awesome-project/
 ├── src/
+│   ├── controllers/
+│   ├── migrations/
 │   ├── models/
 │   ├── repositories/
 │   ├── services/
-│   ├── controllers/
 │   ├── config.ts
 │   └── server.ts
 ├── tests/
@@ -24,173 +25,157 @@ my-awesome-project/
 
 The Model layer represents the domain model. In tsrcoket, database-backed model classes are [TypeORM's](https://github.com/typeorm/typeorm) [entities](https://typeorm.io/#/entities).
 
-For example a User model:
-
-```typescript
-// src/models/user.ts
-import { Column, Entity, PrimaryColumn } from 'typeorm'
-
-@Entity('user')
-export default class User {
-
-    @PrimaryColumn()
-    id: string
-
-    @Column()
-    firstName: string
-
-    @Column()
-    email: string
-
-}
-```
-
 ### Repository layer
 
-The Repository layer is a collection of TypeORM [custom repository](https://typeorm.io/#/custom-repository/custom-repository-extends-standard-repository). A repository class should contain any model manipulation logic.
-For example, supose we have a model `User` and you need a method that search for users by a given first name. We could add a method called `findByFirstName(firstName: string)` inside the `UserRepository` class.
-
-For example:
-
-```typescript
-// src/repositories/user.ts
-import { EntityRepository, Repository } from 'typeorm'
-
-import User from '../models/user'
-
-@EntityRepository(User)
-export default class UserRepository extends Repository<User> {
-
-    async findByFirstName(firstName: string) {
-        return this.findOne({ firstName })
-    }
-
-}
-```
+The Repository layer is a collection of TypeORM [custom repository](https://typeorm.io/#/custom-repository/custom-repository-extends-standard-repository).
 
 ### Service layer
 
-All business logic should reside in the Service layer. A service is based on [typedi](https://github.com/typestack/typedi) dependency injection.
-
-`tsrocket` uses [typeorm-typedi-extensions](https://github.com/typeorm/typeorm-typedi-extensions) under the hood to integrate services and respositories.
-
-For example, supose we want a service to handle User related logic:
-
-```typescript
-// src/services/user.ts
-import { Inject, Service } from 'typedi'
-import { InjectRepository } from 'typeorm-typedi-extensions'
-
-import UserRepository from '../repositories/user'
-
-@Service()
-export default class UserService {
-
-    async find(id: string) {
-        const repository = getCustomRepository(UserRepository) 
-        // first we find the user by its first name
-        const user = await repository.findOne({ id })
-
-        // we can also do something with user before returning it
-
-        return user
-    }
-
-}
-```
+All business logic of your application should reside in the Service layer. `tsrocket` has a built-in service injection inspired by [typedi](https://github.com/typestack/typedi) and [typeorm-typedi-extensions](https://github.com/typeorm/typeorm-typedi-extensions).
 
 ### Controller layer
 
-The Controller layer is responsible for handling incomming HTTP requests and provide a suitable response. For example:
-
-```typescript
-// src/controllers/user.ts
-import { Controller, GET, RestController } from 'tsrocket'
-import UserService from '../services/user'
-
-@Controller('/users')
-export default class UserController extends RestController {
-
-    constructor(private users: UserService) {
-        super()
-    }
-
-    @GET('/')
-    async index() {
-        return this.users.find()
-    }
-
-}
-```
-
-It should return something like this:
-
-```json
-{
-    "data": {
-        "users": [
-            {
-                "firstName": "Smith"
-            }
-        ]
-    } 
-}
-```
+The Controller layer is responsible for handling incomming HTTP requests and provide a suitable response.
 
 ## Quick Start
 
-We can use tsrocket's cli `tsr` o create an application:
+We can use tsrocket's cli `tsr` to create an application. To do so, run the following command:
 
-`tsr new my-awesome-project`
+`tsr new sample-api`
 
-tsrocket will generate all the basic project files. The main function is located at `src/server.ts`:
+`tsrocket` will generate the project folder structure and basic files for your application to run.
+
+If we open the file `src/server.ts`:
 
 ```typescript
 // src/server.ts
 import { Server } from 'tsrocket'
 import config from './config'
+import { createConnection } from 'typeorm'
 
 async function main() {
+    const connection = await createConnection(config.database)
     const server = new Server(config)
-    await server.init()
+    await server.init(connection)
 
     server.listen()
 }
 
 export default main()
+```
+
+This is the main entrance of our application and we can run it in development mode with the command `yarn dev`. It basically creates a database connection and tells `tsrocket` to setup your application so it can be served.
+
+```bash
+$ cd sample-api
+$ yarn dev
+yarn run v1.22.0
+$ ts-node-dev --respawn --transpileOnly src/server.ts
+Using ts-node version 8.8.2, typescript version 3.8.3
+info: listening at port 3000
+```
+
+By default, `tsrocket` uses sqlite as database. We may want to change it when running the application in production. To do so, we can update the `src/config.ts` file. The [TypeORM connection documentation](https://typeorm.io/#/connection-options) might help.
+
+We can run `tsr -help` if we get stuck.
+
+### Model and Repository generation
+
+Suppose we want to generate a User model with a required field 'name' and an optional 'email'. To do so, we can run  `tsr g model User 'name:string' 'email?:string'`. The `g` command stands for `generate`.
+
+`tsrocket` will generate a TypeORM entity:
+
+```typescript
+// src/models/user.ts
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm'
+
+@Entity()
+export default class User {
+
+    @PrimaryGeneratedColumn()
+    id: number
+
+    @Column()
+    name: string
+
+    @Column({ nullable:true })
+    email?: string
+
+}
+```
+
+A TypeORM repository also:
+
+```typescript
+// src/repositories/post.ts
+import { EntityRepository, Repository } from "typeorm";
+import User from "../models/user";
+
+@EntityRepository(User)
+export default class UserRepository extends Repository<User> {
+    /* Add you model logic inside here */
+}
 
 ```
 
-Type `cd my-awesome-project` and `tsr gen controller home` to generate a new controller named `HomeController`:
+We can find a TypeORM migration file inside the migrations folder.
+
+After we generate the User model and its repository. We can use `tsrocket` cli to generate a service to manipulate the repository. Run `tsr g service user` to generate the following file:
 
 ```typescript
-// src/controllers/home.ts
-import { Controller, GET, RestController } from 'tsrocket'
+// src/services/user.ts
+import { Service } from 'tsrocket'
 
-@Controller('/home')
-export default class HomeController extends RestController {
+@Service()
+export default class UserService {
+
+}
+```
+
+We can use use the `@InjectRepository` decorator to inject the user repository:
+
+```typescript
+// src/services/user.ts
+import { Service, InjectRepository } from 'tsrocket'
+import UserRepository from '../repositories/user'
+
+@Service()
+export default class UserService {
+
+    @InjectRepository(UserRepository)
+    private readonly repository: UserRepository
+    
+}
+
+```
+
+We can use the controller generator to create a User controller. Running `tsr g controller user user` will generate the following file:
+
+```typescript
+import { Controller, GET, RestController, Inject } from 'tsrocket'
+import UserService from '../services/user'
+
+@Controller('/user')
+export default class UserController extends RestController {
+
+    @Inject(UserService)
+    private readonly userService: UserService
 
     @GET('/')
     index() {
-        return 'Hello world from /home'
+        return 'Hello world from /user'
     }
 
 }
-
 ```
 
-Run `yarn dev` to starts the server and execute `curl http://localhost:3000/home`:
-
-```json
-{
-    "data": "Hello world from /home"
-}
-```
+As we can se, `tsrocket` generated a controller with the user service already included with the `@Inject` decorator. The first argument of the `tsr g controller` command is the name of the controller and any following argument will be treated as service injection by the `tsrocket` code generator.
 
 ## Contributing
 
-1. Clone the repository
-2. Run `npm link  .` from inside the repository folder
+1. Clone the repository.
+2. Run `cd tsrocket && npm link  .` to use the cloned repository dependency by another project.
+3. Inside another directory, run `tsr new -y test-project` to create a `tsrocket` project, and `cd test-project && npm link tsrocket` for you to test your chances in the `tsrocke` source code.
 
 ### Commit guidelines
 
