@@ -1,11 +1,19 @@
-const templates = require('../../templates')
-const logger = require('../../logger')('debug')
-const fs = require('fs')
-const { capitalCase } = require('change-case')
-const child = require('child_process')
+import fs from 'fs'
+import child from 'child_process'
 
-function generateColumns(argv) {
-    const columns = argv.options.map(columnOption => {
+import { capitalCase } from 'change-case'
+
+import logger from '../../../logger'
+import { parse } from '../../templates'
+
+type Column = { [key: string]: any } & {
+    name: string
+    type: string
+    nullable: boolean
+}
+
+function generateColumns(options: string[]): { columns: Column[] } {
+    const columns: Column[] = options.map(columnOption => {
         const nullable = columnOption.includes('?')
         const [name, type] = nullable
             ? columnOption.split('?:')
@@ -17,20 +25,19 @@ function generateColumns(argv) {
     return { columns }
 }
 
-function generateReposiory(modelName) {
+function generateReposiory(modelName: string) {
     const rootPath = `${process.cwd()}/src/repositories`
     const filePath = `${rootPath}/${modelName}.ts`
 
     const modelData = { modelClass: capitalCase(modelName), modelName }
 
-    const model = templates.parse('repository.ts.hbs', modelData)
+    const model = parse('repository.ts.hbs', modelData)
 
     fs.writeFileSync(filePath, model)
     logger.info(`new repository at ${filePath}`)
 }
 
-function generateModel(argv) {
-    const { name } = argv
+export function generateModel(name: string, options?: string[]) {
     const rootPath = `${process.cwd()}/src/models`
     const filePath = `${rootPath}/${name}.ts`
 
@@ -40,9 +47,10 @@ function generateModel(argv) {
         return
     }
 
-    const model = templates.parse(
+    const columns = options ? generateColumns(options) : {}
+    const model = parse(
         'model.ts.hbs',
-        { ...generateColumns(argv), model: capitalCase(name) }
+        { ...columns, model: capitalCase(name) }
     )
 
     fs.writeFileSync(filePath, model)
@@ -55,5 +63,3 @@ function generateModel(argv) {
         { stdio: 'inherit' }
     )
 }
-
-module.exports = generateModel

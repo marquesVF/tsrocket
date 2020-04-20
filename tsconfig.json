@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "experimentalDecorators": true,
-        "outDir": "dist/",
+        "outDir": "./dist",
         "baseUrl": ".",
         "declaration": true,
         "typeRoots": ["node_modules/@types"],
@@ -22,6 +22,6 @@
         "noImplicitAny": true
     },
     "include": [
-        "lib"
+        "lib/**/*"
     ]
 }

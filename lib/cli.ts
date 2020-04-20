@@ -1,8 +1,9 @@
-const yargs = require('yargs')
-const newServer = require('./cli/commands/server')
-const generator = require('./cli/commands/generator')
+import yargs from 'yargs'
 
-const args = yargs
+import { newServer } from './cli/commands/server'
+import { generator } from './cli/commands/generator'
+
+export default yargs
     .command(
         'new <name>',
         'Create application',
@@ -35,5 +36,3 @@ const args = yargs
     .help('h')
     .alias('h', 'help')
     .argv
-
-module.exports = args

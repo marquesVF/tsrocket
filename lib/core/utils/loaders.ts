@@ -1,6 +1,6 @@
 import * as glob from 'glob'
 
-import logger from '../logger'
+import logger from '../../logger'
 
 export async function loadControllers(controllers: string[]) {
     for (const controller of controllers) {

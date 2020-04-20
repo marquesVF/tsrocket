@@ -3,10 +3,10 @@ Ease up web APIs development in Typescript with scaffolding, dependency injectio
 
 ## What's tsrocket?
 
-`tsrocket` is composed of a lightweight REST framework, dependecy injection, cli and code generation. An `tsrocket` project has four layers (controllers, models, repositories and services) and is structured as follows:
+`tsrocket` is composed of a lightweight REST framework, dependecy injection, cli and code generation. An `tsrocket` project has four layers (controllers, models, repositories and services) and it is structured as follows:
 
 ```
-my-awesome-project/
+sample-api/
 ├── src/
 │   ├── controllers/
 │   ├── migrations/
@@ -169,7 +169,7 @@ export default class UserController extends RestController {
 }
 ```
 
-As we can se, `tsrocket` generated a controller with the user service already included with the `@Inject` decorator. The first argument of the `tsr g controller` command is the name of the controller and any following argument will be treated as service injection by the `tsrocket` code generator.
+As we can se, `tsrocket` generated a controller with the user service already included with the `@Inject` decorator. The first argument of the `tsr g controller` command is the name of the controller and any following argument will be treated as dependency injection by the `tsrocket` code generator.
 
 ## Contributing
 
