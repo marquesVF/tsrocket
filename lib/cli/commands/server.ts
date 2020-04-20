@@ -1,15 +1,22 @@
-const fs = require('fs')
-const child = require('child_process')
-const templates = require('../templates')
-const logger = require('../logger')('debug')
-const prompt = require('prompt-sync')({ sigint: true })
+import fs from 'fs'
+import child from 'child_process'
 
-function createDefaultFolders(name) {
+import promptSync from 'prompt-sync'
+
+import { TEMPLATES_FOLDER, parse } from '../templates'
+import logger from '../../logger'
+
+type NewServerArguments = {
+    name: string
+    y: boolean
+}
+
+function createDefaultFolders(name: string) {
     const rootPath = `${process.cwd()}/${name}`
-    const createFolders = domains => {
+    const createFolders = (domains: string[]) => {
         domains.forEach(domain => {
             fs.mkdirSync(`${rootPath}/src/${domain}`, { recursive: true })
-            fs.writeFileSync(`${rootPath}/src/${domain}/.gitkeep`)
+            fs.writeFileSync(`${rootPath}/src/${domain}/.gitkeep`, {})
         })
     }
 
@@ -26,7 +33,7 @@ function createDefaultFolders(name) {
         ])
 
         fs.mkdirSync(`${rootPath}/tests`)
-        fs.writeFileSync(`${rootPath}/tests/.gitkeep`)
+        fs.writeFileSync(`${rootPath}/tests/.gitkeep`, {})
     } catch (err) {
         // TODO handle it properly
         logger.error(err)
@@ -35,30 +42,31 @@ function createDefaultFolders(name) {
     return rootPath
 }
 
-function copyDefaultFiles(rootPath) {
+function copyDefaultFiles(rootPath: string) {
     fs.copyFileSync(
-        `${templates.path}/tsconfig.json.hbs`,
+        `${TEMPLATES_FOLDER}/tsconfig.json.hbs`,
         `${rootPath}/tsconfig.json`
     )
     fs.copyFileSync(
-        `${templates.path}/tsconfig.ts-node.json.hbs`,
+        `${TEMPLATES_FOLDER}/tsconfig.ts-node.json.hbs`,
         `${rootPath}/tsconfig.ts-node.json`
     )
     fs.copyFileSync(
-        `${templates.path}/ormconfig.json.hbs`,
+        `${TEMPLATES_FOLDER}/ormconfig.json.hbs`,
         `${rootPath}/ormconfig.json`
     )
     fs.copyFileSync(
-        `${templates.path}/server.ts.hbs`,
+        `${TEMPLATES_FOLDER}/server.ts.hbs`,
         `${rootPath}/src/server.ts`
     )
     fs.copyFileSync(
-        `${templates.path}/config.ts.hbs`,
+        `${TEMPLATES_FOLDER}/config.ts.hbs`,
         `${rootPath}/src/config.ts`
     )
 }
 
-function inquireAppContext(appName) {
+function inquireAppContext(appName: string) {
+    const prompt = promptSync({ sigint: true })
     logger.debug('Inquirying project information')
 
     const appDescription = prompt('Project description: ')
@@ -68,18 +76,19 @@ function inquireAppContext(appName) {
     return { appName, appDescription, appAuthor, appLicence }
 }
 
-function newServer(argv) {
+export function newServer(args: NewServerArguments) {
+    const { name, y: defaults } = args
     logger.info('setting up your awesome project...')
 
-    const appRoot = createDefaultFolders(argv.name)
+    const appRoot = createDefaultFolders(name)
     copyDefaultFiles(appRoot)
 
     const defaultContext = {
-        appName: argv.name,
+        appName: name,
         appLicence: 'MIT'
     }
-    const context = argv.y ? defaultContext : inquireAppContext(argv.name)
-    const packageJson = templates.parse('package.json.hbs', context)
+    const context = defaults ? defaultContext : inquireAppContext(name)
+    const packageJson = parse('package.json.hbs', context)
 
     const appPackage = `${appRoot}/package.json`
     fs.writeFileSync(appPackage, packageJson)
@@ -90,5 +99,3 @@ function newServer(argv) {
 
     logger.info('all done!')
 }
-
-module.exports = newServer

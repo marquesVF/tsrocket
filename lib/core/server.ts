@@ -2,9 +2,9 @@ import express from 'express'
 import { Connection } from 'typeorm'
 
 import { ServerConfiguration } from '../types'
+import logger from '../logger'
 
 import { loadControllers } from './utils/loaders'
-import logger from './logger'
 import { getMetadataStorage } from './metadata/metadata-storage'
 import { Container } from './container'
 
