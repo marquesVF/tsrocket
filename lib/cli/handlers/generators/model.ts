@@ -5,14 +5,9 @@ import { capitalCase } from 'change-case'
 
 import logger from '../../../logger'
 import { parse } from '../../templates'
+import { Column } from '../../types'
 
-type Column = { [key: string]: any } & {
-    name: string
-    type: string
-    nullable: boolean
-}
-
-function generateColumns(options: string[]): { columns: Column[] } {
+function generateColumns(options: string[]): Column[] {
     const columns: Column[] = options.map(columnOption => {
         const nullable = columnOption.includes('?')
         const [name, type] = nullable
@@ -22,7 +17,7 @@ function generateColumns(options: string[]): { columns: Column[] } {
         return { name, type, nullable }
     })
 
-    return { columns }
+    return columns
 }
 
 function generateReposiory(modelName: string) {
@@ -37,7 +32,7 @@ function generateReposiory(modelName: string) {
     logger.info(`new repository at ${filePath}`)
 }
 
-export function generateModel(name: string, options?: string[]) {
+function generateModelFile(name: string, options?: string[]) {
     const rootPath = `${process.cwd()}/src/models`
     const filePath = `${rootPath}/${name}.ts`
 
@@ -48,12 +43,15 @@ export function generateModel(name: string, options?: string[]) {
     }
 
     const columns = options ? generateColumns(options) : {}
-    const templateArguments = { ...columns, model: capitalCase(name) }
+    const templateArguments = { columns, model: capitalCase(name) }
     const model = parse('model.ts.hbs', templateArguments)
 
     fs.writeFileSync(filePath, model)
     logger.info(`new model at ${filePath}`)
+}
 
+export function generateModel(name: string, options?: string[]) {
+    generateModelFile(name, options)
     generateReposiory(name)
 
     child.execSync(
