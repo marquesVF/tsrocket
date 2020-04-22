@@ -11,3 +11,9 @@ export type ModelGeneratorArguments = GeneratorArgument & {
 export type InjectableGeneratorArguments = GeneratorArgument & {
     services: string[]
 }
+
+export type Column = { [key: string]: any } & {
+    name: string
+    type: string
+    nullable: boolean
+}
