@@ -2,18 +2,9 @@ import fs from 'fs'
 
 import { capitalCase } from 'change-case'
 
-import logger from '../../logger'
-import { parse } from '../templates'
-
-import { generateModel } from './generators/model'
-
-type Domain = 'service' | 'controller' | 'model'
-
-type GeneratorArguments = {
-    name: string
-    generator: Domain
-    options?: string[]
-}
+import { Domain } from '../../types'
+import logger from '../../../logger'
+import { parse } from '../../templates'
 
 type ImportableServices = {
     variable: string
@@ -33,7 +24,11 @@ function importServices(imports: string[]): ImportableServices[] | undefined {
         }))
 }
 
-function generate(name: string, domain: Domain, options?: string[]) {
+export function generateInjectable(
+    name: string,
+    domain: Domain,
+    options?: string[]
+) {
     const rootPath = `${process.cwd()}/src/${domain}s`
     const filePath = `${rootPath}/${name}.ts`
 
@@ -52,21 +47,4 @@ function generate(name: string, domain: Domain, options?: string[]) {
 
     fs.writeFileSync(filePath, controller)
     logger.info(`new ${domain} at ${filePath}`)
-}
-
-export function generator(args: GeneratorArguments) {
-    const { name, generator, options } = args
-    switch (generator) {
-        case 'controller':
-            generate(name, generator)
-            break
-        case 'service':
-            generate(name, generator)
-            break
-        case 'model':
-            generateModel(name, options)
-            break
-        default:
-            throw new Error(`Invalid option '${generator}'`)
-    }
 }

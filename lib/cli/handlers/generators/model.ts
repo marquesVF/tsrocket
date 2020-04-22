@@ -48,10 +48,8 @@ export function generateModel(name: string, options?: string[]) {
     }
 
     const columns = options ? generateColumns(options) : {}
-    const model = parse(
-        'model.ts.hbs',
-        { ...columns, model: capitalCase(name) }
-    )
+    const templateArguments = { ...columns, model: capitalCase(name) }
+    const model = parse('model.ts.hbs', templateArguments)
 
     fs.writeFileSync(filePath, model)
     logger.info(`new model at ${filePath}`)
