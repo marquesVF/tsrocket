@@ -1,17 +1,8 @@
-import { generateEntity } from '../handlers/generator'
+import { Argv } from 'yargs'
 
-export const command = [
-    'generate <entity> <name> [options..]',
-    'g <entity> <name> [options..]'
-]
+export const command = 'generate <entity>'
+export const aliases = ['g']
 export const desc = 'Generate a controller, service or model'
-export const builder = (args: any) => {
-    args.positional('entity', {
-        describe: 'scaffold project entities',
-        choices: ['controller', 'service', 'model'],
-        type: 'string'
-    }).positional('name', {
-        describe: 'entity name'
-    })
-}
-export const handler = generateEntity
+export const builder = (yargs: Argv<{}>) => yargs.commandDir('generate')
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+export const handler = () => {}

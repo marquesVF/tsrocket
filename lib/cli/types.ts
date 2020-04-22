@@ -1,7 +1,13 @@
-export type Entity = 'service' | 'controller' | 'model'
-
-export type GeneratorArguments = {
+type GeneratorArgument = {
     name: string
-    entity: Entity
-    options?: string[]
+}
+
+export type InjectableDomain = 'service' | 'controller'
+
+export type ModelGeneratorArguments = GeneratorArgument & {
+    properties?: string[]
+}
+
+export type InjectableGeneratorArguments = GeneratorArgument & {
+    services: string[]
 }
