@@ -1,7 +1,7 @@
-export type Domain = 'service' | 'controller' | 'model'
+export type Entity = 'service' | 'controller' | 'model'
 
 export type GeneratorArguments = {
     name: string
-    generator: Domain
+    entity: Entity
     options?: string[]
 }
