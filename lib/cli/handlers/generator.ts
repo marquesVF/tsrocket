@@ -4,18 +4,18 @@ import { generateModel } from './generators/model'
 import { generateInjectable } from './generators/injectable'
 
 export function generateEntity(args: GeneratorArguments) {
-    const { name, generator, options } = args
-    switch (generator) {
+    const { name, entity, options } = args
+    switch (entity) {
         case 'controller':
-            generateInjectable(name, generator)
+            generateInjectable(name, entity)
             break
         case 'service':
-            generateInjectable(name, generator)
+            generateInjectable(name, entity)
             break
         case 'model':
             generateModel(name, options)
             break
         default:
-            throw new Error(`Invalid option '${generator}'`)
+            throw new Error(`Invalid option '${entity}'`)
     }
 }

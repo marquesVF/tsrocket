@@ -2,7 +2,7 @@ import fs from 'fs'
 
 import { capitalCase } from 'change-case'
 
-import { Domain } from '../../types'
+import { Entity } from '../../types'
 import logger from '../../../logger'
 import { parse } from '../../templates'
 
@@ -26,7 +26,7 @@ function importServices(imports: string[]): ImportableServices[] | undefined {
 
 export function generateInjectable(
     name: string,
-    domain: Domain,
+    domain: Entity,
     options?: string[]
 ) {
     const rootPath = `${process.cwd()}/src/${domain}s`
