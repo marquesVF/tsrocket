@@ -76,7 +76,7 @@ function inquireAppContext(appName: string) {
     return { appName, appDescription, appAuthor, appLicence }
 }
 
-export function newServer(args: NewServerArguments) {
+export function generateBaseProject(args: NewServerArguments) {
     const { name, y: defaults } = args
     logger.info('setting up your awesome project...')
 

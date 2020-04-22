@@ -1,7 +1,7 @@
 import yargs from 'yargs'
 
-import { newServer } from './cli/commands/server'
-import { generator } from './cli/commands/generator'
+import { generateBaseProject } from './cli/handlers/project'
+import { generateEntity } from './cli/handlers/generator'
 
 export default yargs
     .command(
@@ -14,16 +14,16 @@ export default yargs
                 description: 'Create project with default values'
             })
         },
-        newServer
+        generateBaseProject
     )
     .command(
         [
-            'generate <generator> <name> [options..]',
-            'g <generator> <name> [options..]'
+            'generate <entity> <name> [options..]',
+            'g <entity> <name> [options..]'
         ],
         'Generate a controller, service or model',
-        yargs => {
-            yargs.positional('generator', {
+        args => {
+            args.positional('entity', {
                 describe: 'scaffold project entities',
                 choices: ['controller', 'service', 'model'],
                 type: 'string'
@@ -31,7 +31,7 @@ export default yargs
                 describe: 'entity name'
             })
         },
-        generator
+        generateEntity
     )
     .help('h')
     .alias('h', 'help')
