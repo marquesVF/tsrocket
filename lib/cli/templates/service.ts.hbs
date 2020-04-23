@@ -1,4 +1,4 @@
-import { Service } from 'tsrocket'
+import { Service{{#if services}}, Inject{{/if}} } from 'tsrocket'
 {{#each services}}
 import {{this.name}}Service from './{{this.variable}}'
 {{/each}}

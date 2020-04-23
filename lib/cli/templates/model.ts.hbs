@@ -1,9 +1,9 @@
 import { Entity, {{#if columns}}Column, {{/if}}PrimaryGeneratedColumn } from 'typeorm'
 
 @Entity()
-export default class {{model}} {
+export default class {{name}} {
 
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn('uuid')
     id: number
 
     {{#each columns}}
