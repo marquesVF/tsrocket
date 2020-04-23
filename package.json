@@ -46,6 +46,7 @@
     "express": "4.17.1",
     "glob": "7.1.6",
     "handlebars": "^4.7.6",
+    "pluralize": "8.0.0",
     "prompt-sync": "4.2.0",
     "reflect-metadata": "0.1.13",
     "typeorm": "0.2.24",
@@ -56,6 +57,7 @@
     "node": ">=12.14.1"
   },
   "devDependencies": {
+    "@types/pluralize": "0.0.29",
     "@typescript-eslint/eslint-plugin": "2.25.0",
     "@typescript-eslint/parser": "2.25.0",
     "change-case": "4.1.1",

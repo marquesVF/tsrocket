@@ -1,7 +1,6 @@
 import { Argv } from 'yargs'
 
-import { InjectableGeneratorArguments } from '../../types'
-import { generateInjectable } from '../../handlers/generators/injectable'
+import { generateService } from '../../handlers/generators/service'
 
 export const command = 'service <name> [services...]'
 export const aliases = ['se']
@@ -14,8 +13,4 @@ export const builder = (yargs: Argv<{}>) => yargs
     .positional('services', {
         describe: 'services to be injected into the controller class'
     })
-export const handler = (args: InjectableGeneratorArguments) => {
-    const { name, services } = args
-
-    generateInjectable(name, 'service', services)
-}
+export const handler = generateService

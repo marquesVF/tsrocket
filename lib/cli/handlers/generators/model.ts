@@ -1,14 +1,12 @@
-import fs from 'fs'
 import child from 'child_process'
 
 import { capitalCase } from 'change-case'
 
-import logger from '../../../logger'
-import { parse } from '../../templates'
-import { Column } from '../../types'
+import { generateFile } from '../utils/files'
+import { Column, ModelGeneratorArguments, RepositoryData } from '../types'
 
-function generateColumns(options: string[]): Column[] {
-    const columns: Column[] = options.map(columnOption => {
+function generateColumns(properties: string[]): Column[] {
+    return properties.map(columnOption => {
         const nullable = columnOption.includes('?')
         const [name, type] = nullable
             ? columnOption.split('?:')
@@ -16,42 +14,27 @@ function generateColumns(options: string[]): Column[] {
 
         return { name, type, nullable }
     })
-
-    return columns
 }
 
-function generateReposiory(modelName: string) {
-    const rootPath = `${process.cwd()}/src/repositories`
-    const filePath = `${rootPath}/${modelName}.ts`
-
-    const modelData = { modelClass: capitalCase(modelName), modelName }
-
-    const model = parse('repository.ts.hbs', modelData)
-
-    fs.writeFileSync(filePath, model)
-    logger.info(`new repository at ${filePath}`)
-}
-
-function generateModelFile(name: string, options?: string[]) {
-    const rootPath = `${process.cwd()}/src/models`
-    const filePath = `${rootPath}/${name}.ts`
-
-    if (fs.existsSync(filePath)) {
-        logger.warn(`model ${name} already exists at ${filePath}`)
-
-        return
+function generateReposiory(name: string) {
+    const repositoryData: RepositoryData = {
+        modelClass: capitalCase(name),
+        modelName: name
     }
 
-    const columns = options ? generateColumns(options) : {}
-    const templateArguments = { columns, model: capitalCase(name) }
-    const model = parse('model.ts.hbs', templateArguments)
-
-    fs.writeFileSync(filePath, model)
-    logger.info(`new model at ${filePath}`)
+    generateFile(name, 'repository', repositoryData)
 }
 
-export function generateModel(name: string, options?: string[]) {
-    generateModelFile(name, options)
+export function generateModel(args: ModelGeneratorArguments) {
+    const { name, properties } = args
+
+    const columns = properties ? generateColumns(properties) : undefined
+    const modelData = {
+        columns,
+        name: capitalCase(name)
+    }
+
+    generateFile(name, 'model', modelData)
     generateReposiory(name)
 
     child.execSync(
