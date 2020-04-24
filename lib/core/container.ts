@@ -1,6 +1,6 @@
 import { InjectionHandler } from './types/injection-handler'
 import { Identifier } from './types/identifier'
-import { ContainerMetadata } from './metadata/definitions'
+import { ContainerMetadata } from './metadata/types'
 
 export class Container {
 

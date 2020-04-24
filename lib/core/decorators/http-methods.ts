@@ -1,5 +1,5 @@
 import { getMetadataStorage } from '../metadata/metadata-storage'
-import { RouteArguments } from '../metadata/definitions'
+import { RouteArguments } from '../metadata/types'
 
 function registerRoute(args: RouteArguments) {
     const { target, propertyKey, method, path } = args
