@@ -1,6 +1,6 @@
 import child from 'child_process'
 
-import { capitalCase } from 'change-case'
+import { pascalCase } from 'change-case'
 
 import { generateFile } from '../utils/files'
 import {
@@ -23,7 +23,7 @@ function generateColumns(properties: string[]): Column[] {
 
 function generateReposiory(name: string) {
     const repositoryData: RepositoryData = {
-        modelClass: capitalCase(name),
+        modelClass: pascalCase(name),
         modelName: name
     }
 
@@ -31,7 +31,7 @@ function generateReposiory(name: string) {
 }
 
 function generateService(name: string) {
-    const model = capitalCase(name)
+    const model = pascalCase(name)
     const serviceData: ServiceData = {
         name: model,
         repository: {
@@ -49,7 +49,7 @@ export function generateModel(args: ModelGeneratorArguments) {
     const columns = properties ? generateColumns(properties) : undefined
     const modelData = {
         columns,
-        name: capitalCase(name)
+        name: pascalCase(name)
     }
 
     generateFile(name, 'model', modelData)

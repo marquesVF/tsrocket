@@ -1,6 +1,6 @@
 import fs from 'fs'
 
-import { capitalCase } from 'change-case'
+import { pascalCase } from 'change-case'
 
 import { ImportableServiceData } from '../types'
 
@@ -12,7 +12,7 @@ export function importServices(services: string[]): ImportableServiceData[] {
             return fs.existsSync(path)
         })
         .map(service => ({
-            name: capitalCase(service),
+            name: pascalCase(service),
             variable: service
         }))
 }

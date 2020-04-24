@@ -1,4 +1,4 @@
-import { capitalCase } from 'change-case'
+import { pascalCase } from 'change-case'
 
 import { importServices } from '../utils/injectable'
 import { generateFile } from '../utils/files'
@@ -8,7 +8,7 @@ export function generateService(args: InjectableGeneratorArguments) {
     const { name, services } = args
 
     const templateData: ServiceData = {
-        name: capitalCase(name),
+        name: pascalCase(name),
         services: services ? importServices(services) : undefined
     }
 
