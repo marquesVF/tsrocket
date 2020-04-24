@@ -1,4 +1,4 @@
-import { capitalCase } from 'change-case'
+import { pascalCase } from 'change-case'
 import { plural } from 'pluralize'
 
 import { InjectableGeneratorArguments, ControllerData } from '../types'
@@ -9,7 +9,7 @@ export function generateController(args: InjectableGeneratorArguments) {
     const { name, services } = args
 
     const templateData: ControllerData = {
-        name: capitalCase(name),
+        name: pascalCase(name),
         path: plural(name),
         services: services ? importServices(services) : undefined
     }
