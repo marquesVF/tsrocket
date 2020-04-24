@@ -2,8 +2,13 @@ export type GeneratorArgument = {
     name: string
 }
 
-type ServiceArgument = {
+type ServiceInjectableData = {
     name: string
+    variable: string
+}
+
+type RepositoryInjectableData = {
+    model: string
     variable: string
 }
 
@@ -14,12 +19,14 @@ export type InjectableGeneratorArguments = {
 
 export type ModelGeneratorArguments = {
     name: string
+    s: boolean // --service flag
     properties?: string[]
 }
 
 export type ServiceData = {
     name: string
-    services?: ServiceArgument[]
+    services?: ServiceInjectableData[]
+    repository?: RepositoryInjectableData
 }
 
 export type ControllerData = ServiceData & {

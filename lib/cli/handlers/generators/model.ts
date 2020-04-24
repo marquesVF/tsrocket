@@ -3,7 +3,12 @@ import child from 'child_process'
 import { capitalCase } from 'change-case'
 
 import { generateFile } from '../utils/files'
-import { Column, ModelGeneratorArguments, RepositoryData } from '../types'
+import {
+    Column,
+    ModelGeneratorArguments,
+    RepositoryData,
+    ServiceData
+} from '../types'
 
 function generateColumns(properties: string[]): Column[] {
     return properties.map(columnOption => {
@@ -25,8 +30,21 @@ function generateReposiory(name: string) {
     generateFile(name, 'repository', repositoryData)
 }
 
+function generateService(name: string) {
+    const model = capitalCase(name)
+    const serviceData: ServiceData = {
+        name: model,
+        repository: {
+            model,
+            variable: name
+        }
+    }
+
+    generateFile(name, 'service', serviceData)
+}
+
 export function generateModel(args: ModelGeneratorArguments) {
-    const { name, properties } = args
+    const { name, properties, s: shouldGenerateService } = args
 
     const columns = properties ? generateColumns(properties) : undefined
     const modelData = {
@@ -36,6 +54,10 @@ export function generateModel(args: ModelGeneratorArguments) {
 
     generateFile(name, 'model', modelData)
     generateReposiory(name)
+
+    if (shouldGenerateService) {
+        generateService(name)
+    }
 
     child.execSync(
         `yarn dev:orm migration:generate -n ${name}-migration`,
