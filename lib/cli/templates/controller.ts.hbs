@@ -11,9 +11,18 @@ export default class {{name}}Controller extends RestController {
     private readonly {{this.variable}}Service: {{this.name}}Service
 
     {{/each}}
+    {{#if crud}}
+    @Inject({{crud.serviceName}}Service)
+    private readonly {{crud.serviceVariable}}Service: {{this.serviceName}}Service
+
+    async find() {
+        return this.{{crud.serviceVariable}}.find
+    }
+    {{else}}
     @GET('/')
     index() {
         return 'Hello world from /{{path}}'
     }
+    {{/if}}
 
 }
