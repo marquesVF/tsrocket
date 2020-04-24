@@ -39,7 +39,11 @@ The Controller layer is responsible for handling incomming HTTP requests and pro
 
 ## Quick Start
 
-We can use tsrocket's cli `tsr` to create an application. To do so, run the following command:
+The first thing we need to do is to install the `tsrocket` package.
+
+`npm install -g tsrocket`
+
+Then, we can use tsrocket's cli `tsr` to create an application. To do so, run the following command:
 
 `tsr new -y sample-api`
 
