@@ -27,7 +27,7 @@ The Model layer represents the domain model. In tsrcoket, database-backed model 
 
 ### Repository layer
 
-The Repository layer is a collection of TypeORM [custom repository](https://typeorm.io/#/custom-repository/custom-repository-extends-standard-repository).
+The Repository layer is a collection of TypeORM [custom repository](https://typeorm.io/#/custom-repository/custom-repository-extends-standard-repository). Any model manipulation or validation should be included in it.
 
 ### Service layer
 
@@ -41,7 +41,7 @@ The Controller layer is responsible for handling incomming HTTP requests and pro
 
 We can use tsrocket's cli `tsr` to create an application. To do so, run the following command:
 
-`tsr new sample-api`
+`tsr new -y sample-api`
 
 `tsrocket` will generate the project folder structure and basic files for your application to run.
 
@@ -81,7 +81,7 @@ We can run `tsr -help` if we get stuck.
 
 ### Model and Repository generation
 
-Suppose we want to generate a User model with a required field 'name' and an optional 'email'. To do so, we can run  `tsr g model User 'name:string' 'email?:string'`. The `g` command stands for `generate`.
+Suppose we want to generate a User model with a required field 'name' and an optional 'email'. To do so, we can run  `tsr g model user name:string 'email?:string'`. The `g` command stands for `generate`.
 
 `tsrocket` will generate a TypeORM entity:
 
@@ -149,6 +149,8 @@ export default class UserService {
 
 ```
 
+In many aplications, we need the service to handle basic CRUD operations using the model repository. We can run `tsr g model -s user name:string 'email?:string'` to generate a model with its repository, migration and CRUD ready service.
+
 We can use the controller generator to create a User controller. Running `tsr g controller user user` will generate the following file:
 
 ```typescript
@@ -169,7 +171,7 @@ export default class UserController extends RestController {
 }
 ```
 
-As we can se, `tsrocket` generated a controller with the user service already included with the `@Inject` decorator. The first argument of the `tsr g controller` command is the name of the controller and any following argument will be treated as dependency injection by the `tsrocket` code generator.
+As we can se, `tsrocket` generated a controller with the user service already injected with the `@Inject` decorator. The first argument of the `tsr g controller` command is the name of the controller and any following argument will be treated as dependency injection by the `tsrocket` code generator.
 
 ## Contributing
 
