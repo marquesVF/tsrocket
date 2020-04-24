@@ -1,7 +1,11 @@
-import { Service } from 'tsrocket'
+import { Service{{#if services}}, Inject{{/if}}{{#if repository}}, InjectRepository{{/if}} } from 'tsrocket'
 {{#each services}}
 import {{this.name}}Service from './{{this.variable}}'
 {{/each}}
+{{#if repository}}
+import {{repository.model}}Repository from '../repositories/{{repository.variable}}'
+import {{repository.model}} from '../models/{{repository.variable}}'
+{{/if}}
 
 @Service()
 export default class {{ name }}Service {
@@ -11,4 +15,28 @@ export default class {{ name }}Service {
     private readonly {{this.variable}}Service: {{this.name}}Service
 
     {{/each}}
+    {{#if repository}}
+    @InjectRepository({{repository.model}}Repository)
+    private readonly repository: {{repository.model}}Repository
+
+    async all() {
+        return this.repository.find()
+    }
+
+    async find(id: string) {
+        return this.repository.findOne(id)
+    }
+
+    async create({{repository.variable}}: {{repository.model}}) {
+        return this.create({{repository.variable}})
+    }
+
+    async update(id: string, {{repository.variable}}: Partial<{{repository.model}}>) {
+        return this.repository.update(id, {{repository.variable}})
+    }
+
+    async delete(id: string) {
+        return this.repository.delete(id)
+    }
+    {{/if}}
 }
