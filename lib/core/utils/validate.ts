@@ -1,3 +1,5 @@
+import { Request } from 'express'
+
 import { ArgMetadata, InputFieldMetadata } from '../metadata/types'
 import { ValidationResult, ValidationError } from '../types/validation'
 
@@ -10,27 +12,28 @@ import { ValidationResult, ValidationError } from '../types/validation'
  * @returns {ValidationResult}
  */
 export function validate(
-    body: any,
+    req: Request,
     fields: InputFieldMetadata[],
     arg?: ArgMetadata
 ): ValidationResult {
-    if (!arg) { return { args: {} } }
+    if (!arg) { return { parameters: {} } }
 
-    const errors: ValidationError[] = []
+    const errs: ValidationError[] = []
     const argsObj = new arg.target()
     fields.forEach(field => {
         const { propertyKey, nullable } = field
-        const value = body[field.propertyKey]
+        const reqArgs = req[arg.type]
+        const value = reqArgs[field.propertyKey]
 
         if (!nullable && value === undefined) {
-            errors.push({
+            errs.push({
                 type: 'MISSING_FIELD',
                 message: `'${propertyKey}' field is missing`
             })
         }
 
-        argsObj[field.propertyKey] = body[field.propertyKey]
+        argsObj[field.propertyKey] = reqArgs[field.propertyKey]
     })
 
-    return { args: argsObj, errors: errors.length > 0 ? errors : undefined }
+    return { parameters: argsObj, errors: errs.length > 0 ? errs : undefined }
 }

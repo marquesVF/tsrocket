@@ -36,7 +36,7 @@ export class MetadataStorage {
 
         const controllerObject: RestController = Container.get(target)
         const handler = async (req: Request, res: Response) => {
-            const { args, errors } = validate(req.body, fields, argMetadata)
+            const { parameters, errors } = validate(req, fields, argMetadata)
 
             if (errors) {
                 res.status(400).send({ errors })
@@ -44,7 +44,7 @@ export class MetadataStorage {
                 return
             }
 
-            const result = await controllerObject[propertyKey](args)
+            const result = await controllerObject[propertyKey](parameters)
             const response = { data: result }
 
             res.send(response)
