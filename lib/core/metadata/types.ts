@@ -28,7 +28,7 @@ export type ContainerMetadata = {
 }
 
 export type ArgMetadata = {
-    type: 'body' | 'query'
+    type: 'body' | 'query' | 'params'
     target: any
     controller: string
     propertyKey: string

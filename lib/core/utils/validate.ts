@@ -20,9 +20,10 @@ export function validate(
 
     const errs: ValidationError[] = []
     const argsObj = new arg.target()
+    const reqArgs = req[arg.type]
+
     fields.forEach(field => {
         const { propertyKey, nullable } = field
-        const reqArgs = req[arg.type]
         const value = reqArgs[field.propertyKey]
 
         if (!nullable && value === undefined) {

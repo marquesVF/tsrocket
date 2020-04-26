@@ -4,6 +4,7 @@ import { sanitizePath } from '../utils/sanitizers'
 import { RestController } from '../rest-controller'
 import { Container } from '../container'
 import { validate } from '../utils/validate'
+import { requestStatus } from '../utils/request'
 
 import {
     ControllerMetadata,
@@ -47,7 +48,7 @@ export class MetadataStorage {
             const result = await controllerObject[propertyKey](parameters)
             const response = { data: result }
 
-            res.send(response)
+            res.status(requestStatus(method)).send(response)
         }
 
         router[method](path, handler)
