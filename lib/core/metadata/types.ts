@@ -26,3 +26,16 @@ export type ContainerMetadata = {
     id: Identifier
     instance: any
 }
+
+export type ArgMetadata = {
+    target: any
+    controller: string
+    propertyKey: string
+    index: number
+}
+
+export type InputFieldMetadata = {
+    target: any
+    propertyKey: string
+    nullable: boolean
+}
