@@ -28,7 +28,7 @@ export default class {{ name }}Service {
     }
 
     async create({{repository.variable}}: {{repository.model}}) {
-        return this.create({{repository.variable}})
+        return this.repository.save({{repository.variable}})
     }
 
     async update(id: string, {{repository.variable}}: Partial<{{repository.model}}>) {
