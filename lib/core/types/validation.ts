@@ -7,6 +7,6 @@ export type ValidationError = {
 }
 
 export type ValidationResult = {
-    parameters: any
+    parameters: any[]
     errors?: ValidationError[]
 }

@@ -22,6 +22,12 @@ export function POST(path: string): MethodDecorator {
     }
 }
 
+export function PUT(path: string): MethodDecorator {
+    return (target: Object, propertyKey: string | symbol) => {
+        registerRoute({ target, propertyKey, method: 'put', path })
+    }
+}
+
 // TODO add support to it
 export function DELETE(path: string): MethodDecorator {
     return (target: Object, propertyKey: string | symbol) => {

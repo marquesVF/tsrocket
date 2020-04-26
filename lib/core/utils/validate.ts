@@ -14,27 +14,38 @@ import { ValidationResult, ValidationError } from '../types/validation'
 export function validate(
     req: Request,
     fields: InputFieldMetadata[],
-    arg?: ArgMetadata
+    argMetadatas: ArgMetadata[]
 ): ValidationResult {
-    if (!arg) { return { parameters: {} } }
+    if (argMetadatas.length === 0) { return { parameters: [{}] } }
 
     const errs: ValidationError[] = []
-    const argsObj = new arg.target()
-    const reqArgs = req[arg.type]
+    const returnedArguments: any[] = []
 
-    fields.forEach(field => {
-        const { propertyKey, nullable } = field
-        const value = reqArgs[field.propertyKey]
+    argMetadatas.forEach(arg => {
+        const filteredFields = fields.filter(metadata =>
+            metadata.target.constructor.name === arg?.target.name)
 
-        if (!nullable && value === undefined) {
-            errs.push({
-                type: 'MISSING_FIELD',
-                message: `'${propertyKey}' field is missing`
-            })
-        }
+        const argsObj = new arg.target()
+        const reqArgs = req[arg.type]
 
-        argsObj[field.propertyKey] = reqArgs[field.propertyKey]
+        filteredFields.forEach(field => {
+            const { propertyKey, nullable } = field
+            const value = reqArgs[field.propertyKey]
+
+            if (!nullable && value === undefined) {
+                errs.push({
+                    type: 'MISSING_FIELD',
+                    message: `'${propertyKey}' field is missing`
+                })
+            }
+
+            argsObj[field.propertyKey] = reqArgs[field.propertyKey]
+        })
+
+        returnedArguments[arg.index] = argsObj
     })
 
-    return { parameters: argsObj, errors: errs.length > 0 ? errs : undefined }
+    const returnedErrors = errs.length > 0 ? errs : undefined
+
+    return { parameters: returnedArguments, errors: returnedErrors }
 }

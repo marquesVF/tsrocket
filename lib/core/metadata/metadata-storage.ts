@@ -29,15 +29,14 @@ export class MetadataStorage {
             target
         } = this.controllers[controller]
 
-        const argMetadata = this.args.find(metadata =>
+        const argMetadata = this.args.filter(metadata =>
             metadata.propertyKey === propertyKey
                 && metadata.controller === controller)
-        const fields = this.fields.filter(metadata =>
-            metadata.target.constructor.name === argMetadata?.target.name)
 
         const controllerObject: RestController = Container.get(target)
         const handler = async (req: Request, res: Response) => {
-            const { parameters, errors } = validate(req, fields, argMetadata)
+            const { parameters, errors }
+                = validate(req, this.fields, argMetadata)
 
             if (errors) {
                 res.status(400).send({ errors })
@@ -45,7 +44,7 @@ export class MetadataStorage {
                 return
             }
 
-            const result = await controllerObject[propertyKey](parameters)
+            const result = await controllerObject[propertyKey](...parameters)
             const response = { data: result }
 
             res.status(requestStatus(method)).send(response)
