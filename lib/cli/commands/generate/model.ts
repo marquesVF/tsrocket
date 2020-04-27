@@ -6,10 +6,15 @@ export const command = 'model <name> [properties...]'
 export const aliases = ['mo']
 export const desc = 'Generate a new model with its properties'
 export const builder = (yargs: Argv<{}>) => yargs
+    .option('controller', {
+        alias: 'c',
+        type: 'boolean',
+        description: 'generate controller with CRUD functionalities'
+    })
     .option('service', {
         alias: 's',
         type: 'boolean',
-        description: 'generate a basic CRUD model service'
+        description: 'generate model service with CRUD functionalities'
     })
     .positional('name', {
         describe: 'model name',

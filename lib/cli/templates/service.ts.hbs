@@ -5,6 +5,7 @@ import {{this.name}}Service from './{{this.variable}}'
 {{#if repository}}
 import {{repository.model}}Repository from '../repositories/{{repository.variable}}'
 import {{repository.model}} from '../models/{{repository.variable}}'
+import { {{repository.model}}Dto } from '../dto/{{repository.variable}}'
 {{/if}}
 
 @Service()
@@ -27,8 +28,8 @@ export default class {{ name }}Service {
         return this.repository.findOne(id)
     }
 
-    async create({{repository.variable}}: {{repository.model}}) {
-        return this.create({{repository.variable}})
+    async create({{repository.variable}}: {{repository.model}}Dto) {
+        return this.repository.save({{repository.variable}})
     }
 
     async update(id: string, {{repository.variable}}: Partial<{{repository.model}}>) {

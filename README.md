@@ -9,6 +9,7 @@ Ease up web APIs development in Typescript with scaffolding, dependency injectio
 sample-api/
 ├── src/
 │   ├── controllers/
+│   ├── dtos/
 │   ├── migrations/
 │   ├── models/
 │   ├── repositories/
@@ -21,6 +22,14 @@ sample-api/
 └── README.md
 ```
 
+### Controller layer
+
+The Controller layer is responsible for handling incomming HTTP requests and provide a suitable response.
+
+### DTO layer
+
+DTO stands for Data Transfer Object. In `tsrocket`, the DTO layer is responsible to represent what the controller should expect as inputs from the requests.
+
 ### Model layer
 
 The Model layer represents the domain model. In tsrcoket, database-backed model classes are [TypeORM's](https://github.com/typeorm/typeorm) [entities](https://typeorm.io/#/entities).
@@ -32,10 +41,6 @@ The Repository layer is a collection of TypeORM [custom repository](https://type
 ### Service layer
 
 All business logic of your application should reside in the Service layer. `tsrocket` has a built-in service injection inspired by [typedi](https://github.com/typestack/typedi) and [typeorm-typedi-extensions](https://github.com/typeorm/typeorm-typedi-extensions).
-
-### Controller layer
-
-The Controller layer is responsible for handling incomming HTTP requests and provide a suitable response.
 
 ## Quick Start
 
@@ -153,12 +158,62 @@ export default class UserService {
 
 ```
 
-In many aplications, we need the service to handle basic CRUD operations using the model repository. We can run `tsr g model -s user name:string 'email?:string'` to generate a model with its repository, migration and CRUD ready service.
+In many aplications, we need a **service** to handle basic CRUD operations using the model repository. We can run `tsr g model -s user name:string 'email?:string'` to generate a model with its repository, migration and CRUD ready service.
 
-We can use the controller generator to create a User controller. Running `tsr g controller user user` will generate the following file:
+If we run `tsr g model -c user name:string 'email?:string'`, besides a user service, `tsr` will also generate a CRUD **controller** with everyting configured and ready to run.
+
+Both the flags `-s` and `-c` will create DTOs automatically.
+
+For example:
 
 ```typescript
-import { Controller, GET, RestController, Inject } from 'tsrocket'
+// src/controller/user.ts
+import { Controller, Get, RestController, Params, Put, Body, Post, Inject, Delete } from 'tsrocket'
+import UserService from '../services/user'
+import { UserFindDto, UserDto } from '../dtos/user'
+
+@Controller('/users')
+export default class UserController extends RestController {
+
+    @Inject(UserService)
+    private readonly userService: UserService
+
+    @Get('/')
+    index() {
+        return this.userService.all()
+    }
+
+    @Get('/:id')
+    find(@Params(UserFindDto) findDto: UserFindDto) {
+        return this.userService.find(findDto.id)
+    }
+
+    @Put('/:id')
+    update(
+        @Params(UserFindDto) findDto: UserFindDto,
+        @Body(UserDto) userDto: UserDto
+    ) {
+        this.userService.update(findDto.id, userDto)
+    }
+
+    @Post('/')
+    create(@Body(UserDto) userDto: UserDto) {
+        return this.userService.create(userDto)
+    }
+
+    @Delete('/:id')
+    delete(@Params(UserFindDto) findDto: UserFindDto) {
+        this.userService.delete(findDto.id)
+    }
+
+}
+```
+
+We can use the controller generator to create an empty controller. Running `tsr g controller user user` will generate the following file:
+
+```typescript
+// src/controllers/user.ts
+import { Controller, Get, RestController, Inject } from 'tsrocket'
 import UserService from '../services/user'
 
 @Controller('/user')
@@ -167,7 +222,7 @@ export default class UserController extends RestController {
     @Inject(UserService)
     private readonly userService: UserService
 
-    @GET('/')
+    @Get('/')
     index() {
         return 'Hello world from /user'
     }
@@ -175,7 +230,7 @@ export default class UserController extends RestController {
 }
 ```
 
-As we can se, `tsrocket` generated a controller with the user service already injected with the `@Inject` decorator. The first argument of the `tsr g controller` command is the name of the controller and any following argument will be treated as dependency injection by the `tsrocket` code generator.
+As we can se, `tsrocket` generated a controller with the user service already injected with the `@Inject` decorator. The first argument of the `tsr g controller` command is the name of the controller and any following argument will be treated as dependency injection by the `tsrocket` scaffold.
 
 ## Contributing
 

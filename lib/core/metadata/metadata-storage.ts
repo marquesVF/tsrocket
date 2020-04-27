@@ -3,14 +3,23 @@ import { Express, Router, Request, Response } from 'express'
 import { sanitizePath } from '../utils/sanitizers'
 import { RestController } from '../rest-controller'
 import { Container } from '../container'
+import { validate } from '../utils/validate'
+import { requestStatus } from '../utils/request'
 
-import { ControllerMetadata, RouteMetadata } from './definitions'
+import {
+    ControllerMetadata,
+    RouteMetadata,
+    ArgMetadata,
+    InputFieldMetadata
+} from './types'
 
 export class MetadataStorage {
 
     private static _storage = new MetadataStorage()
-    controllers: Record<string, ControllerMetadata> = {}
-    routes: RouteMetadata[] = []
+    private controllers: Record<string, ControllerMetadata> = {}
+    private routes: RouteMetadata[] = []
+    private args: ArgMetadata[] = []
+    private fields: InputFieldMetadata[] = []
 
     private buildRoute(route: RouteMetadata) {
         const { controller, propertyKey, path, method } = route
@@ -20,14 +29,25 @@ export class MetadataStorage {
             target
         } = this.controllers[controller]
 
+        const argMetadata = this.args.filter(metadata =>
+            metadata.propertyKey === propertyKey
+                && metadata.controller === controller)
+
         const controllerObject: RestController = Container.get(target)
-        // TODO improve erro handling
         const handler = async (req: Request, res: Response) => {
-            const args = { params: req.body }
-            const result = await controllerObject[propertyKey](args)
+            const { parameters, errors }
+                = validate(req, this.fields, argMetadata)
+
+            if (errors) {
+                res.status(400).send({ errors })
+
+                return
+            }
+
+            const result = await controllerObject[propertyKey](...parameters)
             const response = { data: result }
 
-            res.send(response)
+            res.status(requestStatus(method)).send(response)
         }
 
         router[method](path, handler)
@@ -42,6 +62,14 @@ export class MetadataStorage {
 
     storeRouteMetadata(data: RouteMetadata) {
         this.routes.push(data)
+    }
+
+    storeArgMetadata(data: ArgMetadata) {
+        this.args.push(data)
+    }
+
+    storeInputField(data: InputFieldMetadata) {
+        this.fields.push(data)
     }
 
     buildRoutes(app: Express) {

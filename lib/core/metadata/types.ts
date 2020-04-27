@@ -7,7 +7,7 @@ export type RouteArguments = {
     path: string
 }
 
-export type RequestMethod = 'get' | 'post' | 'delete'
+export type RequestMethod = 'get' | 'post' | 'delete' | 'put'
 
 export interface ControllerMetadata {
     path: string
@@ -25,4 +25,20 @@ export type RouteMetadata = {
 export type ContainerMetadata = {
     id: Identifier
     instance: any
+}
+
+export type ArgType = 'body' | 'query' | 'params'
+
+export type ArgMetadata = {
+    type: ArgType
+    target: any
+    controller: string
+    propertyKey: string
+    index: number
+}
+
+export type InputFieldMetadata = {
+    target: any
+    propertyKey: string
+    nullable: boolean
 }

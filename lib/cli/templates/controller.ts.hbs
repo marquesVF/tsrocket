@@ -1,4 +1,20 @@
-import { Controller, GET, RestController{{#if services}}, Inject{{/if}} } from 'tsrocket'
+{{#if crud}}
+import {
+    Controller,
+    Get,
+    Post,
+    Put,
+    Delete,
+    RestController,
+    Params,
+    Body,
+    Inject
+} from 'tsrocket'
+import {{crud.name}}Service from '../services/{{crud.variable}}'
+import { {{crud.name}}FindDto, {{crud.name}}Dto } from '../dtos/{{crud.variable}}'
+{{else}}
+import { Controller, Get, RestController{{#if services}}, Inject{{/if}} } from 'tsrocket'
+{{/if}}
 {{#each services}}
 import {{this.name}}Service from '../services/{{this.variable}}'
 {{/each}}
@@ -12,14 +28,38 @@ export default class {{name}}Controller extends RestController {
 
     {{/each}}
     {{#if crud}}
-    @Inject({{crud.serviceName}}Service)
-    private readonly {{crud.serviceVariable}}Service: {{this.serviceName}}Service
+    @Inject({{crud.name}}Service)
+    private readonly {{crud.variable}}Service: {{this.name}}Service
 
-    async find() {
-        return this.{{crud.serviceVariable}}.find
+    @Get('/')
+    index() {
+        return this.{{crud.variable}}Service.all()
+    }
+
+    @Get('/:id')
+    find(@Params({{crud.name}}FindDto) findDto: {{crud.name}}FindDto) {
+        return this.{{crud.variable}}Service.find(findDto.id)
+    }
+
+    @Put('/:id')
+    update(
+        @Params({{crud.name}}FindDto) findDto: {{crud.name}}FindDto,
+        @Body({{crud.name}}Dto) {{crud.variable}}Dto: {{crud.name}}Dto
+    ) {
+        this.{{crud.variable}}Service.update(findDto.id, {{crud.variable}}Dto)
+    }
+
+    @Post('/')
+    create(@Body({{crud.name}}Dto) {{crud.variable}}Dto: {{crud.name}}Dto) {
+        return this.{{crud.variable}}Service.create({{crud.variable}}Dto)
+    }
+
+    @Delete('/:id')
+    delete(@Params({{crud.name}}FindDto) findDto: {{crud.name}}FindDto) {
+        this.{{crus.variable}}Service.delete(findDto.id)
     }
     {{else}}
-    @GET('/')
+    @Get('/')
     index() {
         return 'Hello world from /{{path}}'
     }

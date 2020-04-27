@@ -1,0 +1,17 @@
+import { InputField } from 'tsrocket'
+
+export class {{name}}Dto {
+
+    {{#each fields}}
+    @InputField({{#if this.nullable}}{ nullable:true }{{/if}})
+    {{this.name}}{{#if this.nullable}}?{{/if}}: {{this.type}}
+
+    {{/each}}
+}
+
+export class {{name}}FindDto {
+
+    @InputField()
+    id: string
+
+}
