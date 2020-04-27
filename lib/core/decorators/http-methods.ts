@@ -28,7 +28,6 @@ export function Put(path: string): MethodDecorator {
     }
 }
 
-// TODO add support to it
 export function Delete(path: string): MethodDecorator {
     return (target: Object, propertyKey: string | symbol) => {
         registerRoute({ target, propertyKey, method: 'delete', path })

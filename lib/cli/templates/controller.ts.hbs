@@ -2,11 +2,12 @@
 import {
     Controller,
     Get,
+    Post,
+    Put,
+    Delete,
     RestController,
     Params,
-    Put,
     Body,
-    Post,
     Inject
 } from 'tsrocket'
 import {{crud.name}}Service from '../services/{{crud.variable}}'
@@ -51,6 +52,11 @@ export default class {{name}}Controller extends RestController {
     @Post('/')
     create(@Body({{crud.name}}Dto) {{crud.variable}}Dto: {{crud.name}}Dto) {
         return this.{{crud.variable}}Service.create({{crud.variable}}Dto)
+    }
+
+    @Delete('/:id')
+    delete(@Params({{crud.name}}FindDto) findDto: {{crud.name}}FindDto) {
+        this.{{crus.variable}}Service.delete(findDto.id)
     }
     {{else}}
     @Get('/')
