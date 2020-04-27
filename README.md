@@ -216,7 +216,7 @@ We can use the controller generator to create an empty controller. Running `tsr 
 import { Controller, Get, RestController, Inject } from 'tsrocket'
 import UserService from '../services/user'
 
-@Controller('/user')
+@Controller('/users')
 export default class UserController extends RestController {
 
     @Inject(UserService)
@@ -224,7 +224,7 @@ export default class UserController extends RestController {
 
     @Get('/')
     index() {
-        return 'Hello world from /user'
+        return 'Hello world from /users'
     }
 
 }
