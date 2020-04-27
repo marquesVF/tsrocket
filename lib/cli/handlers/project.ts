@@ -29,7 +29,8 @@ function createDefaultFolders(name: string) {
             'models',
             'repositories',
             'controllers',
-            'migrations'
+            'migrations',
+            'dtos'
         ])
 
         fs.mkdirSync(`${rootPath}/tests`)
