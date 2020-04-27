@@ -1,4 +1,4 @@
-import { Controller, GET, RestController{{#if services}}, Inject{{/if}} } from 'tsrocket'
+import { Controller, Get, RestController{{#if services}}, Inject{{/if}} } from 'tsrocket'
 {{#each services}}
 import {{this.name}}Service from '../services/{{this.variable}}'
 {{/each}}
@@ -19,7 +19,7 @@ export default class {{name}}Controller extends RestController {
         return this.{{crud.serviceVariable}}.find
     }
     {{else}}
-    @GET('/')
+    @Get('/')
     index() {
         return 'Hello world from /{{path}}'
     }

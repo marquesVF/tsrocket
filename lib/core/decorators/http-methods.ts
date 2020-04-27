@@ -10,26 +10,26 @@ function registerRoute(args: RouteArguments) {
         .storeRouteMetadata({ path, method, propertyKey: key, controller })
 }
 
-export function GET(path: string): MethodDecorator {
+export function Get(path: string): MethodDecorator {
     return (target: Object, propertyKey: string | symbol) => {
         registerRoute({ target, propertyKey, method: 'get', path })
     }
 }
 
-export function POST(path: string): MethodDecorator {
+export function Post(path: string): MethodDecorator {
     return (target: Object, propertyKey: string | symbol) => {
         registerRoute({ target, propertyKey, method: 'post', path })
     }
 }
 
-export function PUT(path: string): MethodDecorator {
+export function Put(path: string): MethodDecorator {
     return (target: Object, propertyKey: string | symbol) => {
         registerRoute({ target, propertyKey, method: 'put', path })
     }
 }
 
 // TODO add support to it
-export function DELETE(path: string): MethodDecorator {
+export function Delete(path: string): MethodDecorator {
     return (target: Object, propertyKey: string | symbol) => {
         registerRoute({ target, propertyKey, method: 'delete', path })
     }
