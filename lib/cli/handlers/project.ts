@@ -96,7 +96,7 @@ export function generateBaseProject(args: NewServerArguments) {
 
     logger.info('installing dependencies...')
 
-    child.execSync('yarn', { stdio: 'inherit' })
+    child.execSync('npm install', { stdio: 'inherit' })
 
     logger.info('all done!')
 }

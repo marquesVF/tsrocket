@@ -73,14 +73,11 @@ async function main() {
 export default main()
 ```
 
-This is the main entrance of our application and we can run it in development mode with the command `yarn dev`. It basically creates a database connection and tells `tsrocket` to setup your application so it can be served.
+This is the main entrance of our application and we can run it in development mode with the command `npm run dev`. It basically creates a database connection and tells `tsrocket` to setup your application so it can be served.
 
 ```bash
 $ cd sample-api
-$ yarn dev
-yarn run v1.22.0
-$ ts-node-dev --respawn --transpileOnly src/server.ts
-Using ts-node version 8.8.2, typescript version 3.8.3
+$ npm run dev
 info: listening at port 3000
 ```
 

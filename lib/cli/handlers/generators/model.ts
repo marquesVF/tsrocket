@@ -88,7 +88,7 @@ export function generateModel(args: ModelGeneratorArguments) {
 
     // TODO does not generate duplicated migrations
     { child.execSync(
-        `yarn dev:orm migration:generate -n ${name}-migration`,
+        `npm run dev:orm migration:generate -n ${name}-migration`,
         { stdio: 'inherit' }
     ) }
 }
