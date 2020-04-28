@@ -44,7 +44,7 @@ All business logic of your application should reside in the Service layer. `tsro
 
 ## Quick Start
 
-The first thing we need to do is to install the `tsrocket` package.
+The first thing we need to do is to install the `tsrocket` package. It's worth notice that `tsrocket` was developed and tested for node version `>=12.14.1`
 
 `npm install -g tsrocket`
 
@@ -228,6 +228,41 @@ export default class UserController extends RestController {
 ```
 
 As we can se, `tsrocket` generated a controller with the user service already injected with the `@Inject` decorator. The first argument of the `tsr g controller` command is the name of the controller and any following argument will be treated as dependency injection by the `tsrocket` scaffold.
+
+We can use `@Get` to indicate a HTTP *get* request handler, `@Post` for a *post* handler and so on. `tsrocket` knows what HTTP status to send depending on the HTTP method and the handler response (if it returns something valid or throws an error, for instance). It's noticible that we need to pass a path as argument to every of these decorators. But we don't need to worry, since `tsr` is a powerfool scaffold tool and it can generate almost everything we need to build a REST api.
+
+We can use the `tsrocket` parameter decorators to validate and make sure that the controller handlers receive the expected data from the request. The `@Body` and `@Params` decorators reflects [express](https://expressjs.com/en/api.html#req) *body* and *params* properties from a *Request* instance. Both of these decorators receive a DTO class that `tsrocket` will use to validate the received data.
+
+For example:
+
+```typescript
+// src/dtos/user.ts
+import { InputField } from 'tsrocket'
+
+export class UserDto {
+
+    @InputField()
+    name: string
+
+    @InputField({ nullable: true })
+    lastName?:string
+
+    @InputField()
+    email: string
+
+}
+
+export class UserFindDto {
+
+    @InputField()
+    id: string
+
+}
+```
+
+The `@InputField` is used to indicate an DTO attribute.
+
+After using `tsr` to scaffold a model with its repository, service and controller, we can run `npm run dev:orm` to execute `typeorm` commands. For instance, we can run the generated migrations: `npm run dev:orm migration:run`.
 
 ## Contributing
 
