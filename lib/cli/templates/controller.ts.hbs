@@ -56,7 +56,7 @@ export default class {{name}}Controller extends RestController {
 
     @Delete('/:id')
     delete(@Params({{crud.name}}FindDto) findDto: {{crud.name}}FindDto) {
-        this.{{crus.variable}}Service.delete(findDto.id)
+        this.{{crud.variable}}Service.delete(findDto.id)
     }
     {{else}}
     @Get('/')
