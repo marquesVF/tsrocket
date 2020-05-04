@@ -3,7 +3,7 @@ Ease up web APIs development in Typescript with scaffolding, dependency injectio
 
 ## What's tsrocket?
 
-`tsrocket` is composed of a lightweight REST framework, dependecy injection, cli and code generation. An `tsrocket` project has four layers (controllers, models, repositories and services) and it is structured as follows:
+`tsrocket` is composed of a lightweight REST framework, dependecy injection, cli and code generation. A `tsrocket` project has four layers (controllers, models, repositories and services) and it is structured as follows:
 
 ```
 sample-api/
@@ -121,10 +121,31 @@ import User from "../models/user";
 export default class UserRepository extends Repository<User> {
     /* Add you model logic inside here */
 }
-
 ```
 
 We can find a TypeORM migration file inside the migrations folder.
+
+To have more information on how to use `tsr` to generate a model, we can run:
+
+```bash
+$ tsr generate model --h
+tsr generate model <name> [properties...]
+
+Generate a new model with its properties
+
+Positionals:
+  name        model name                                     [string] [required]
+  properties  model properties (format: <name>:<type> or <name>?:<type> for
+              nullable)                                    [array] [default: []]
+
+Options:
+  --version         Show version number                                [boolean]
+  -h, --help        Show help                                          [boolean]
+  --controller, -c  generate controller with CRUD functionalities      [boolean]
+  --service, -s     generate model service with CRUD functionalities   [boolean]
+```
+
+Properties: `<name>:<type>`, `<name>?:<type>`, `<modelName>:<hasMany|hasOne>`
 
 After we generate the User model and its repository. We can use `tsrocket` cli to generate a service to manipulate the repository. Run `tsr g service user` to generate the following file:
 

@@ -9,18 +9,47 @@ import {
     ModelGeneratorArguments,
     RepositoryData,
     ServiceData,
-    ControllerData
+    ControllerData,
+    ModelRelation,
+    ModelProperty,
+    ModelData,
+    RelatedModelUpdate
 } from '../types'
+import { isRelation } from '../utils/type-checker'
+import { handleRelation } from '../utils/handle-relations'
+import { updateModel } from '../utils/update-model'
 
-function generateColumns(properties: string[]): Column[] {
-    return properties.map(columnOption => {
+type Properties = ModelProperty & {
+    modelUpdates: RelatedModelUpdate[]
+}
+
+function processProperties(name: string, properties: string[]): Properties {
+    const columns: Column[] = []
+    const relations: ModelRelation[] = []
+    const modelUpdates: RelatedModelUpdate[] = []
+
+    properties.forEach(columnOption => {
         const nullable = columnOption.includes('?')
-        const [name, type] = nullable
+        const [propName, type] = nullable
             ? columnOption.split('?:')
             : columnOption.split(':')
 
-        return { name, type, nullable }
+        if (isRelation(type)) {
+            const {
+                modelRelations,
+                relatedModelUpdate
+            } = handleRelation(name, propName, type)
+
+            relations.push(modelRelations)
+            if (relatedModelUpdate) {
+                modelUpdates.push(relatedModelUpdate)
+            }
+        } else {
+            columns.push({ name: propName, type, nullable })
+        }
     })
+
+    return { columns, relations, modelUpdates }
 }
 
 function generateReposiory(name: string) {
@@ -45,27 +74,19 @@ function generateService(name: string) {
     generateFile(name, 'service', serviceData)
 }
 
-export function generateModel(args: ModelGeneratorArguments) {
-    const {
-        name,
-        properties,
-        s: shouldGenerateService,
-        c: shouldGenerateController
-    } = args
-
-    const columns = properties ? generateColumns(properties) : undefined
-    const modelData = {
-        columns,
-        name: pascalCase(name)
-    }
-
-    generateFile(name, 'model', modelData)
+function generateModelRelated(
+    name: string,
+    shouldGenerateController: boolean,
+    shouldGenerateService: boolean,
+    fields?: Column[],
+    properties?: string[]
+) {
     generateReposiory(name)
 
     if ((shouldGenerateService || shouldGenerateController) && properties) {
         const dtoData = {
             name: pascalCase(name),
-            fields: generateColumns(properties)
+            fields
         }
         generateFile(name, 'dto', dtoData)
 
@@ -85,6 +106,33 @@ export function generateModel(args: ModelGeneratorArguments) {
 
         generateFile(name, 'controller', controllerData)
     }
+}
+
+export function generateModel(args: ModelGeneratorArguments) {
+    const { name, properties, s, c } = args
+
+    const props = properties ? processProperties(name, properties) : undefined
+    const imports = props?.relations?.map(relation => relation.relation)
+    const joinColumnImport = imports?.includes('OneToOne')
+        || imports?.includes('ManyToMany')
+        ? ['JoinColumn']
+        : []
+    const modelData: ModelData = {
+        columns: props?.columns,
+        relations: props?.relations,
+        name: pascalCase(name),
+        imports: [...new Set(imports), ...joinColumnImport]
+    }
+
+    generateFile(name, 'model', modelData)
+
+    if (props?.modelUpdates) {
+        for (const update of props.modelUpdates) {
+            updateModel(update)
+        }
+    }
+
+    generateModelRelated(name, s, c, modelData.columns, properties)
 
     // TODO does not generate duplicated migrations
     { child.execSync(
