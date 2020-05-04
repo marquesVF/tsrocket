@@ -2,7 +2,7 @@ import { Container } from '../container'
 
 export function InjectRepository(value: Function): Function {
     return function (target: Object, propertyName: string, index?: number) {
-        Container.registerHandler({
+        Container.injectionRequest({
             target,
             propertyName,
             index,

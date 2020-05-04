@@ -1,11 +1,11 @@
-import { InjectionHandler } from './types/injection-handler'
+import { InjectionMetadata } from './types/injection-metadata'
 import { Identifier } from './types/identifier'
-import { ContainerMetadata } from './metadata/types'
+import { InjectableMetadata } from './metadata/types'
 
 export class Container {
 
-    private static injectables: ContainerMetadata[] = []
-    private static handlers: InjectionHandler[] = []
+    private static injectables: InjectableMetadata[] = []
+    private static injectionRequests: InjectionMetadata[] = []
 
     /**
      * Set a Container instance to an id. If no instance is passed as argument
@@ -35,11 +35,11 @@ export class Container {
             injectableInstance = serviceMetadata.instance
         }
 
-        const registeredHandlers = this.handlers.filter(handler =>
+        const injectionRequests = this.injectionRequests.filter(handler =>
             handler.target.constructor === injectableInstance.constructor)
 
-        registeredHandlers.forEach(handler => {
-            const { propertyName, instance } = handler
+        injectionRequests.forEach(injectionRequest => {
+            const { propertyName, instance } = injectionRequest
 
             Reflect.set(injectableInstance, propertyName, instance)
         })
@@ -47,8 +47,8 @@ export class Container {
         return injectableInstance
     }
 
-    static registerHandler(handler: InjectionHandler) {
-        this.handlers.push(handler)
+    static injectionRequest(injection: InjectionMetadata) {
+        this.injectionRequests.push(injection)
     }
 
 }
