@@ -125,7 +125,7 @@ export default class UserRepository extends Repository<User> {
 
 We can find a TypeORM migration file inside the migrations folder.
 
-To have more information on how to use `tsr` to generate a model, we can run:
+We can run the following command to get more information about `tsr` model generation:
 
 ```bash
 $ tsr generate model --h
@@ -135,8 +135,9 @@ Generate a new model with its properties
 
 Positionals:
   name        model name                                     [string] [required]
-  properties  model properties (format: <name>:<type> or <name>?:<type> for
-              nullable)                                    [array] [default: []]
+  properties  model properties (format: <name>:<type>, <name>?:<type> for
+              nullable or <model>:<OneToMany|ManyToMany|ManyToOne|OneToOne> to
+              model relation)                              [array] [default: []]
 
 Options:
   --version         Show version number                                [boolean]
