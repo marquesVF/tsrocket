@@ -3,7 +3,7 @@ import child from 'child_process'
 
 import promptSync from 'prompt-sync'
 
-import { TEMPLATES_FOLDER, parse } from '../templates'
+import { TEMPLATES_PATH, parse } from '../templates'
 import logger from '../../logger'
 
 type NewServerArguments = {
@@ -45,23 +45,23 @@ function createDefaultFolders(name: string) {
 
 function copyDefaultFiles(rootPath: string) {
     fs.copyFileSync(
-        `${TEMPLATES_FOLDER}/tsconfig.json.hbs`,
+        `${TEMPLATES_PATH}/tsconfig.json.hbs`,
         `${rootPath}/tsconfig.json`
     )
     fs.copyFileSync(
-        `${TEMPLATES_FOLDER}/tsconfig.ts-node.json.hbs`,
+        `${TEMPLATES_PATH}/tsconfig.ts-node.json.hbs`,
         `${rootPath}/tsconfig.ts-node.json`
     )
     fs.copyFileSync(
-        `${TEMPLATES_FOLDER}/ormconfig.json.hbs`,
+        `${TEMPLATES_PATH}/ormconfig.json.hbs`,
         `${rootPath}/ormconfig.json`
     )
     fs.copyFileSync(
-        `${TEMPLATES_FOLDER}/server.ts.hbs`,
+        `${TEMPLATES_PATH}/server.ts.hbs`,
         `${rootPath}/src/server.ts`
     )
     fs.copyFileSync(
-        `${TEMPLATES_FOLDER}/config.ts.hbs`,
+        `${TEMPLATES_PATH}/config.ts.hbs`,
         `${rootPath}/src/config.ts`
     )
 }

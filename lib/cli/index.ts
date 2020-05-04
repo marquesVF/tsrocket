@@ -1,7 +1,7 @@
 import yargs from 'yargs'
 
 export default yargs
-    .commandDir('cli/commands')
+    .commandDir('commands')
     .help('h')
     .alias('h', 'help')
     .argv

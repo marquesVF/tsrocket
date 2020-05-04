@@ -22,6 +22,6 @@ export const builder = (yargs: Argv<{}>) => yargs
     })
     .positional('properties', {
         // eslint-disable-next-line max-len
-        describe: 'model properties (format: <name>:<type> or <name>?:<type> for nullable)'
+        describe: 'model properties (format: <name>:<type>, <name>?:<type> for nullable or <model>:<OneToMany|ManyToMany|ManyToOne|OneToOne> to model relation)'
     })
 export const handler = generateModel

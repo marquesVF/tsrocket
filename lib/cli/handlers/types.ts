@@ -18,6 +18,26 @@ export type Column = { [key: string]: any } & {
     nullable: boolean
 }
 
+export type Relation = 'OneToMany' | 'ManyToOne' | 'OneToOne' | 'ManyToMany'
+
+export type ModelRelation = {
+    variable: string
+    model: string
+    modelClass: string
+    relation: Relation
+    join: boolean
+    relationOption?: string
+}
+
+export type RelatedModelUpdate = ModelRelation & {
+    modelToUpdate: string
+}
+
+export type ModelProperty = {
+    columns?: Column[]
+    relations?: ModelRelation[]
+}
+
 export type CrudArgument = {
     name: string
     variable: string
@@ -52,9 +72,9 @@ export type ControllerData = ServiceData & {
     crud?: CrudArgument
 }
 
-export type ModelData = {
+export type ModelData = ModelProperty & {
     name: string
-    columns?: Column[]
+    imports?: string[]
 }
 
 export type RepositoryData = {
