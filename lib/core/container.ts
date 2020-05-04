@@ -4,7 +4,7 @@ import { ContainerMetadata } from './metadata/types'
 
 export class Container {
 
-    private static services: ContainerMetadata[] = []
+    private static injectables: ContainerMetadata[] = []
     private static handlers: InjectionHandler[] = []
 
     /**
@@ -16,7 +16,7 @@ export class Container {
      * @param {*} [instance]
      */
     static set(id: Identifier, instance?: any) {
-        this.services.push({
+        this.injectables.push({
             id,
             instance: instance ?? Container.get(id)
         })
@@ -24,27 +24,27 @@ export class Container {
 
     static get(id: Identifier): any {
         const serviceMetadata = this
-            .services
-            .find(service => service.id === id)
+            .injectables
+            .find(injectable => injectable.id === id)
 
-        let serviceInstance: any
+        let injectableInstance: any
         if (!serviceMetadata) {
-            serviceInstance = new id()
-            this.services.push({ id, instance: serviceInstance })
+            injectableInstance = new id()
+            this.injectables.push({ id, instance: injectableInstance })
         } else {
-            serviceInstance = serviceMetadata.instance
+            injectableInstance = serviceMetadata.instance
         }
 
         const registeredHandlers = this.handlers.filter(handler =>
-            handler.target.constructor === serviceInstance.constructor)
+            handler.target.constructor === injectableInstance.constructor)
 
         registeredHandlers.forEach(handler => {
             const { propertyName, instance } = handler
 
-            Reflect.set(serviceInstance, propertyName, instance)
+            Reflect.set(injectableInstance, propertyName, instance)
         })
 
-        return serviceInstance
+        return injectableInstance
     }
 
     static registerHandler(handler: InjectionHandler) {
