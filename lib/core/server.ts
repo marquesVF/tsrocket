@@ -10,7 +10,7 @@ import { Container } from './container'
 
 export class Server {
 
-    static app = express()
+    static httpServer = express()
     private config: ServerConfiguration
 
     constructor(config: ServerConfiguration) {
@@ -19,16 +19,16 @@ export class Server {
 
     async init(connection: Connection) {
         Container.set('connection', connection)
-        Server.app.use(express.json())
-        Server.app.use(express.urlencoded({ extended: true }))
+        Server.httpServer.use(express.json())
+        Server.httpServer.use(express.urlencoded({ extended: true }))
 
         await loadControllers(this.config.constrollers)
-        getMetadataStorage().buildRoutes(Server.app)
+        getMetadataStorage().buildRoutes(Server.httpServer)
     }
 
     listen() {
         logger.info(`listening at port ${this.config.port}`)
-        Server.app.listen(this.config.port)
+        Server.httpServer.listen(this.config.port)
     }
 
 }

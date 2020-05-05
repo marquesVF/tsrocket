@@ -17,12 +17,14 @@ describe('Server', () => {
         await connection.close()
     })
 
-    it('should inject SampleService and calls its `foo` method', async () => {
-        const service: SampleService = Container.get(SampleService)
-        const response = { data: service.foo() }
-        const res = await request(Server.app).get('/')
+    describe('tsrocket loads the controller and handle dependecy injection', () => {
+        it('get /', async () => {
+            const service: SampleService = Container.get(SampleService)
+            const response = { data: service.foo() }
+            const res = await request(Server.httpServer).get('/')
 
-        expect(res.status).toEqual(200)
-        expect(res.body).toEqual(response)
+            expect(res.status).toEqual(200)
+            expect(res.body).toEqual(response)
+        })
     })
 })
