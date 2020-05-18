@@ -3,7 +3,7 @@ import { Express, Router, Request, Response } from 'express'
 import { sanitizePath } from '../utils/sanitizers'
 import { RestController } from '../rest-controller'
 import { Container } from '../container'
-import { validate } from '../utils/validate'
+import { validateRequestParameters } from '../utils/validate'
 import { requestStatus } from '../utils/request'
 
 import {
@@ -36,7 +36,7 @@ export class MetadataStorage {
         const controllerObject: RestController = Container.get(target)
         const handler = async (req: Request, res: Response) => {
             const { parameters, errors }
-                = validate(req, this.fields, argMetadata)
+                = validateRequestParameters(req, this.fields, argMetadata)
 
             if (errors) {
                 res.status(400).send({ errors })
