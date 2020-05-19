@@ -284,7 +284,7 @@ export class UserFindDto {
 
 The `@InputField` is used to indicate an DTO attribute.
 
-After using `tsr` to scaffold a model with its repository, service and controller, we can run `npm run dev:orm` to execute `typeorm` commands. For instance, we can run the generated migrations: `npm run dev:orm migration:run`.
+After using `tsr` to scaffold a model with its repository, service and controller, we can run `npm run orm` to execute `typeorm` commands. For instance, we can run the generated migrations: `npm run orm migration:run`.
 
 ## Contributing
 
