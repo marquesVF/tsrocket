@@ -5,13 +5,8 @@ import { ValidationResult, ValidationError } from '../types/validation'
 
 /**
  * This method verifies if all the required fields are included in a request
- *
- * @param {*} body
- * @param {InputFieldMetadata[]} fields
- * @param {ArgMetadata} [arg]
- * @returns {ValidationResult}
  */
-export function validate(
+export function validateRequestParameters(
     req: Request,
     fields: InputFieldMetadata[],
     argMetadatas: ArgMetadata[]
@@ -22,13 +17,15 @@ export function validate(
     const returnedArguments: any[] = []
 
     argMetadatas.forEach(arg => {
-        const filteredFields = fields.filter(metadata =>
-            metadata.target.constructor.name === arg?.target.name)
+        const { type, target } = arg
 
-        const argsObj = new arg.target()
-        const reqArgs = req[arg.type]
+        const targetFields = fields.filter(metadata =>
+            metadata.target.constructor.name === target.name)
 
-        filteredFields.forEach(field => {
+        const reqArgs = req[type]
+        const argsObj = new target()
+
+        targetFields.forEach(field => {
             const { propertyKey, nullable } = field
             const value = reqArgs[field.propertyKey]
 
@@ -39,7 +36,7 @@ export function validate(
                 })
             }
 
-            argsObj[field.propertyKey] = reqArgs[field.propertyKey]
+            argsObj[field.propertyKey] = value
         })
 
         returnedArguments[arg.index] = argsObj

@@ -1,11 +1,11 @@
-import { InjectionHandler } from './types/injection-handler'
+import { InjectionMetadata } from './types/injection-metadata'
 import { Identifier } from './types/identifier'
-import { ContainerMetadata } from './metadata/types'
+import { InjectableMetadata } from './metadata/types'
 
 export class Container {
 
-    private static services: ContainerMetadata[] = []
-    private static handlers: InjectionHandler[] = []
+    private static injectables: InjectableMetadata[] = []
+    private static injectionRequests: InjectionMetadata[] = []
 
     /**
      * Set a Container instance to an id. If no instance is passed as argument
@@ -16,7 +16,7 @@ export class Container {
      * @param {*} [instance]
      */
     static set(id: Identifier, instance?: any) {
-        this.services.push({
+        this.injectables.push({
             id,
             instance: instance ?? Container.get(id)
         })
@@ -24,31 +24,34 @@ export class Container {
 
     static get(id: Identifier): any {
         const serviceMetadata = this
-            .services
-            .find(service => service.id === id)
+            .injectables
+            .find(injectable => injectable.id === id)
 
-        let serviceInstance: any
+        let injectableInstance: any
         if (!serviceMetadata) {
-            serviceInstance = new id()
-            this.services.push({ id, instance: serviceInstance })
+            // TODO handle object dependency injection when identifying with string
+            if (typeof id === 'function') {
+                injectableInstance = new id()
+                this.injectables.push({ id, instance: injectableInstance })
+            }
         } else {
-            serviceInstance = serviceMetadata.instance
+            injectableInstance = serviceMetadata.instance
         }
 
-        const registeredHandlers = this.handlers.filter(handler =>
-            handler.target.constructor === serviceInstance.constructor)
+        const injectionRequests = this.injectionRequests.filter(handler =>
+            handler.target.constructor === injectableInstance.constructor)
 
-        registeredHandlers.forEach(handler => {
-            const { propertyName, instance } = handler
+        injectionRequests.forEach(injectionRequest => {
+            const { propertyName, instance } = injectionRequest
 
-            Reflect.set(serviceInstance, propertyName, instance)
+            Reflect.set(injectableInstance, propertyName, instance)
         })
 
-        return serviceInstance
+        return injectableInstance
     }
 
-    static registerHandler(handler: InjectionHandler) {
-        this.handlers.push(handler)
+    static injectionRequest(injection: InjectionMetadata) {
+        this.injectionRequests.push(injection)
     }
 
 }

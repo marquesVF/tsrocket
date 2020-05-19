@@ -1,4 +1,4 @@
-export interface InjectionHandler {
+export interface InjectionMetadata {
     target: any
     propertyName: string
     index?: number

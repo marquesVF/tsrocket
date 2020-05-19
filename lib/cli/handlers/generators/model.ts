@@ -74,7 +74,10 @@ function generateService(name: string) {
     generateFile(name, 'service', serviceData)
 }
 
-function generateModelRelated(
+/**
+ * Handle repository, service and controller generation
+ */
+function generateRelatedFiles(
     name: string,
     shouldGenerateController: boolean,
     shouldGenerateService: boolean,
@@ -132,7 +135,7 @@ export function generateModel(args: ModelGeneratorArguments) {
         }
     }
 
-    generateModelRelated(name, s, c, modelData.columns, properties)
+    generateRelatedFiles(name, c, s, modelData.columns, properties)
 
     // TODO does not generate duplicated migrations
     { child.execSync(

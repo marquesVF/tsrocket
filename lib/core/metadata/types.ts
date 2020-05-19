@@ -22,7 +22,7 @@ export type RouteMetadata = {
     controller: string
 }
 
-export type ContainerMetadata = {
+export type InjectableMetadata = {
     id: Identifier
     instance: any
 }

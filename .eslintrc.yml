@@ -1,5 +1,8 @@
 ---
-env: { es6: true, node: true }
+env: { es6: true, node: true, jest: true }
+files: [
+    '**/*.ts'
+]
 parser: "@typescript-eslint/parser"
 parserOptions:
   project: tsconfig.json
