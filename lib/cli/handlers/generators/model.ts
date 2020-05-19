@@ -140,7 +140,7 @@ export function generateModel(args: ModelGeneratorArguments) {
     // TODO does not generate duplicated migrations
     { child.execSync(
         // eslint-disable-next-line max-len
-        `npx ts-node $(npm bin)/typeorm migration:generate --name ${name}-migration`,
+        `npx ts-node node_modules/typeorm/cli migration:generate --name ${name}-migration`,
         { stdio: 'inherit' }
     ) }
 }
