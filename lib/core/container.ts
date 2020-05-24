@@ -29,7 +29,7 @@ export class Container {
 
         let injectableInstance: any
         if (!serviceMetadata) {
-            // TODO handle object dependency injection when identifying with string
+            // TODO handle object dependency injection when string
             if (typeof id === 'function') {
                 injectableInstance = new id()
                 this.injectables.push({ id, instance: injectableInstance })
