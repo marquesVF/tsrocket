@@ -5,6 +5,8 @@ import { RestController } from '../rest-controller'
 import { Container } from '../container'
 import { validateRequestParameters } from '../utils/validate'
 import { requestStatus } from '../utils/request'
+import logger from '../../logger'
+import { getMilliseconds } from '../../utils/time'
 
 import {
     ControllerMetadata,
@@ -44,8 +46,13 @@ export class MetadataStorage {
                 return
             }
 
+            const processStart = getMilliseconds()
             const result = await controllerObject[propertyKey](...parameters)
+            const timeConsumed = getMilliseconds() - processStart
             const response = { data: result }
+
+            // eslint-disable-next-line max-len
+            logger.info(`[${method}] request to ${controllerObject.constructor.name} '${path}' ${timeConsumed} ms`)
 
             res.status(requestStatus(method)).send(response)
         }
