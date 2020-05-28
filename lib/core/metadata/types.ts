@@ -29,9 +29,11 @@ export type InjectableMetadata = {
 
 export type ArgType = 'body' | 'query' | 'params'
 
+export type ClassType = new (...args: any[]) => any
+
 export type ArgMetadata = {
     type: ArgType
-    target: any
+    target?: ClassType
     controller: string
     propertyKey: string
     index: number
