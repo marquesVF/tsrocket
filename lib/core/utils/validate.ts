@@ -17,13 +17,13 @@ export function validateRequestParameters(
     const returnedArguments: any[] = []
 
     argMetadatas.forEach(arg => {
-        const { type, target } = arg
+        const { type, target, propertyKey } = arg
 
         const targetFields = fields.filter(metadata =>
-            metadata.target.constructor.name === target.name)
+            metadata.target.constructor.name === target?.name)
 
         const reqArgs = req[type]
-        const argsObj = new target()
+        const argsObj = target ? new target() : reqArgs[propertyKey]
 
         targetFields.forEach(field => {
             const { propertyKey, nullable } = field
