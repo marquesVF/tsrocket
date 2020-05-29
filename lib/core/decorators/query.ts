@@ -1,5 +1,5 @@
 import { getMetadataStorage } from '../metadata/metadata-storage'
-import {ClassType} from '../metadata/types'
+import { ClassType } from '../metadata/types'
 
 export function Query(argType: ClassType) {
     return function (target: Object, propertyKey: string, index: number) {

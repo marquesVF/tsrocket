@@ -1,5 +1,7 @@
-export type ErrorType =
-    | 'MISSING_FIELD'
+export enum ErrorType {
+    MissingField = 'MISSING_FIELD',
+    TypeValidation = 'TYPE_VALIDATION'
+}
 
 export type ValidationError = {
     type: ErrorType
