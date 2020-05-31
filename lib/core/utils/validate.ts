@@ -1,7 +1,12 @@
 import { Request } from 'express'
+import { validateSync } from 'class-validator'
 
 import { ArgMetadata, InputFieldMetadata } from '../metadata/types'
-import { ValidationResult, ValidationError } from '../types/validation'
+import {
+    ValidationResult,
+    ValidationError,
+    ErrorType
+} from '../types/validation'
 
 /**
  * This method verifies if all the required fields are included in a request
@@ -31,13 +36,34 @@ export function validateRequestParameters(
 
             if (!nullable && value === undefined) {
                 errs.push({
-                    type: 'MISSING_FIELD',
+                    type: ErrorType.MissingField,
                     message: `'${propertyKey}' field is missing`
                 })
             }
 
             argsObj[field.propertyKey] = value
         })
+
+        if (target) {
+            const errors = validateSync(
+                argsObj,
+                { forbidUnknownValues: true, skipMissingProperties: true }
+            )
+            const descriptions: string[] = []
+            errors.map(err => {
+                const { constraints } = err
+                if (constraints) {
+                    Object.keys(constraints).forEach(key => {
+                        descriptions.push(constraints[key])
+                    })
+                }
+            })
+
+            descriptions.forEach(des => errs.push({
+                type: ErrorType.TypeValidation,
+                message: des
+            }))
+        }
 
         returnedArguments[arg.index] = argsObj
     })

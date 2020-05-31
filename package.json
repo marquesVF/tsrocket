@@ -49,6 +49,7 @@
     "@types/prompt-sync": "4.1.0",
     "@types/yargs": "15.0.4",
     "bluebird": "3.7.2",
+    "class-validator": "0.12.2",
     "express": "4.17.1",
     "glob": "7.1.6",
     "handlebars": "^4.7.6",
