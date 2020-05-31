@@ -1,15 +1,19 @@
 import express from 'express'
 import { Connection } from 'typeorm'
 
-import { ServerConfiguration } from '../types'
+import { ServerConfiguration, ResponseInterceptor } from '../types'
 import logger from '../logger'
 
 import { loadControllers } from './utils/loaders'
 import { getMetadataStorage } from './metadata/metadata-storage'
 import { Container } from './container'
+import {
+    DefaultResponseInterceptor
+} from './defaults/default-response-interceptor'
 
 export class Server {
 
+    static globalResponseInterceptor = new DefaultResponseInterceptor()
     static httpServer = express()
     private config: ServerConfiguration
 
@@ -29,6 +33,10 @@ export class Server {
     listen() {
         logger.info(`listening at port ${this.config.port}`)
         Server.httpServer.listen(this.config.port)
+    }
+
+    useGlobalResponseInterceptor(interceptor: ResponseInterceptor) {
+        Server.globalResponseInterceptor = interceptor
     }
 
 }

@@ -1,4 +1,5 @@
 import { Identifier } from '../types/identifier'
+import { ResponseInterceptor } from '../../types'
 
 export type RouteArguments = {
     target: Object
@@ -43,4 +44,9 @@ export type InputFieldMetadata = {
     target: any
     propertyKey: string
     nullable: boolean
+}
+
+export type ResponseInterceptorMetadata = {
+    interceptor: ResponseInterceptor
+    controller: string
 }
