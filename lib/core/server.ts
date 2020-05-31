@@ -1,16 +1,20 @@
 import express from 'express'
 import { Connection } from 'typeorm'
 
-import { ServerConfiguration } from '../types'
+import { ServerConfiguration, ResponseInterceptor } from '../types'
 import logger from '../logger'
 
 import { loadControllers } from './utils/loaders'
 import { getMetadataStorage } from './metadata/metadata-storage'
 import { Container } from './container'
+import {
+    DefaultResponseInterceptor
+} from './defaults/default-response-interceptor'
 
 export class Server {
 
-    private static expressApp = express()
+    static globalResponseInterceptor = new DefaultResponseInterceptor()
+    static httpServer = express()
     private config: ServerConfiguration
 
     constructor(config: ServerConfiguration) {
@@ -19,16 +23,20 @@ export class Server {
 
     async init(connection: Connection) {
         Container.set('connection', connection)
-        Server.expressApp.use(express.json())
-        Server.expressApp.use(express.urlencoded({ extended: true }))
+        Server.httpServer.use(express.json())
+        Server.httpServer.use(express.urlencoded({ extended: true }))
 
         await loadControllers(this.config.constrollers)
-        getMetadataStorage().buildRoutes(Server.expressApp)
+        getMetadataStorage().buildRoutes(Server.httpServer)
     }
 
     listen() {
         logger.info(`listening at port ${this.config.port}`)
-        Server.expressApp.listen(this.config.port)
+        Server.httpServer.listen(this.config.port)
+    }
+
+    useGlobalResponseInterceptor(interceptor: ResponseInterceptor) {
+        Server.globalResponseInterceptor = interceptor
     }
 
 }

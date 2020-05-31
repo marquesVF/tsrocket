@@ -1,0 +1,7 @@
+{{#if imports}}
+import { {{#each imports}}{{this}}, {{/each}} } from 'typeorm'
+{{/if}}
+
+{{#each relations}}
+import {{this.modelClass}} from './{{this.model}}'
+{{/each}}

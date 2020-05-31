@@ -1,6 +1,6 @@
 {
   "name": "tsrocket",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Ease up web APIs development in Typescript with scaffolding, dependency injection and some sweet decorators",
   "files": [
     "bin",
@@ -22,7 +22,10 @@
     "watch": "tsc --watch",
     "build": "tsc && cp -rf lib/cli/templates dist/cli",
     "prepare": "npm run build",
-    "lint": "eslint --ext .ts --cache lib"
+    "lint": "eslint --ext .ts --cache lib",
+    "test": "jest --detectOpenHandles",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage"
   },
   "bin": {
     "tsr": "./bin/tsr"
@@ -46,6 +49,7 @@
     "@types/prompt-sync": "4.1.0",
     "@types/yargs": "15.0.4",
     "bluebird": "3.7.2",
+    "class-validator": "0.12.2",
     "express": "4.17.1",
     "glob": "7.1.6",
     "handlebars": "^4.7.6",
@@ -60,12 +64,19 @@
     "node": ">=12.14.1"
   },
   "devDependencies": {
+    "@types/jest": "25.2.1",
+    "@types/mocha": "7.0.2",
     "@types/pluralize": "0.0.29",
+    "@types/supertest": "2.0.9",
     "@typescript-eslint/eslint-plugin": "2.25.0",
     "@typescript-eslint/parser": "2.25.0",
     "change-case": "4.1.1",
     "eslint": "6.8.0",
     "eslint-plugin-import": "2.20.1",
+    "jest": "25.5.4",
+    "sqlite3": "4.2.0",
+    "supertest": "4.0.2",
+    "ts-jest": "25.4.0",
     "typescript": "3.8.3"
   }
 }

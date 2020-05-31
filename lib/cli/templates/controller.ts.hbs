@@ -11,7 +11,7 @@ import {
     Inject
 } from 'tsrocket'
 import {{crud.name}}Service from '../services/{{crud.variable}}'
-import { {{crud.name}}FindDto, {{crud.name}}Dto } from '../dtos/{{crud.variable}}'
+import { {{crud.name}}Dto } from '../dtos/{{crud.variable}}'
 {{else}}
 import { Controller, Get, RestController{{#if services}}, Inject{{/if}} } from 'tsrocket'
 {{/if}}
@@ -37,16 +37,16 @@ export default class {{name}}Controller extends RestController {
     }
 
     @Get('/:id')
-    find(@Params({{crud.name}}FindDto) findDto: {{crud.name}}FindDto) {
-        return this.{{crud.variable}}Service.find(findDto.id)
+    find(@Params() id: string) {
+        return this.{{crud.variable}}Service.find(id)
     }
 
     @Put('/:id')
     update(
-        @Params({{crud.name}}FindDto) findDto: {{crud.name}}FindDto,
+        @Params() id: string,
         @Body({{crud.name}}Dto) {{crud.variable}}Dto: {{crud.name}}Dto
     ) {
-        this.{{crud.variable}}Service.update(findDto.id, {{crud.variable}}Dto)
+        this.{{crud.variable}}Service.update(id, {{crud.variable}}Dto)
     }
 
     @Post('/')
@@ -55,8 +55,8 @@ export default class {{name}}Controller extends RestController {
     }
 
     @Delete('/:id')
-    delete(@Params({{crud.name}}FindDto) findDto: {{crud.name}}FindDto) {
-        this.{{crud.variable}}Service.delete(findDto.id)
+    delete(@Params() id: string) {
+        this.{{crud.variable}}Service.delete(id)
     }
     {{else}}
     @Get('/')

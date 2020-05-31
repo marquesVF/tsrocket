@@ -1,5 +1,5 @@
 ---
-env: { es6: true, node: true }
+env: { es6: true, node: true, jest: true }
 parser: "@typescript-eslint/parser"
 parserOptions:
   project: tsconfig.json
@@ -58,7 +58,7 @@ rules:
     [error, { anonymous: always, named: never, asyncArrow: always }]
   yoda: error
   indent: [error, 4, { SwitchCase: 1, CallExpression: { arguments: first } }]
-  max-len: [error, { code: 80 }]
+  max-len: [error, { code: 80, ignoreComments: true }]
   spaced-comment: error
   capitalized-comments: [error, always, { ignoreInlineComments: true }]
   no-unused-expressions: error

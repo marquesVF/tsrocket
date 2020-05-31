@@ -1,0 +1,10 @@
+{{#each relations}}
+@{{this.relation}}(_ => {{this.modelClass}}{{#if this.relationOption}}, {{this.model}} => {{this.model}}.{{this.relationOption}}{{/if}})
+{{#if this.join}}
+@JoinColumn()
+{{this.variable}}: {{this.modelClass}}
+{{else}}
+{{this.variable}}: {{this.modelClass}}
+{{/if}}
+
+{{/each}}

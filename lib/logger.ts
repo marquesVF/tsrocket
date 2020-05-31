@@ -14,5 +14,6 @@ function logger(level: string) {
     })
 }
 
-// TODO logger level should be a parameter
-export default logger('debug')
+const logLevel = process.env.LOG ? process.env.LOG : 'info'
+
+export default logger(logLevel)

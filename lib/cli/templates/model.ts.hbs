@@ -1,4 +1,5 @@
-import { Entity, {{#if columns}}Column, {{/if}}PrimaryGeneratedColumn } from 'typeorm'
+import { Entity, {{#if columns}}Column, {{/if}} PrimaryGeneratedColumn } from 'typeorm'
+{{> imports}}
 
 @Entity()
 export default class {{name}} {
@@ -7,8 +8,9 @@ export default class {{name}} {
     id: number
 
     {{#each columns}}
-    @Column({{#if this.nullable}}{ nullable:true }{{/if}})
+    @Column({{#if this.nullable}}{ nullable: true }{{/if}})
     {{this.name}}{{#if this.nullable}}?{{/if}}: {{this.type}}
 
     {{/each}}
+    {{> relations}}
 }

@@ -1,17 +1,17 @@
 import { Request } from 'express'
+import { validateSync } from 'class-validator'
 
 import { ArgMetadata, InputFieldMetadata } from '../metadata/types'
-import { ValidationResult, ValidationError } from '../types/validation'
+import {
+    ValidationResult,
+    ValidationError,
+    ErrorType
+} from '../types/validation'
 
 /**
  * This method verifies if all the required fields are included in a request
- *
- * @param {*} body
- * @param {InputFieldMetadata[]} fields
- * @param {ArgMetadata} [arg]
- * @returns {ValidationResult}
  */
-export function validate(
+export function validateRequestParameters(
     req: Request,
     fields: InputFieldMetadata[],
     argMetadatas: ArgMetadata[]
@@ -22,25 +22,48 @@ export function validate(
     const returnedArguments: any[] = []
 
     argMetadatas.forEach(arg => {
-        const filteredFields = fields.filter(metadata =>
-            metadata.target.constructor.name === arg?.target.name)
+        const { type, target, propertyKey } = arg
 
-        const argsObj = new arg.target()
-        const reqArgs = req[arg.type]
+        const targetFields = fields.filter(metadata =>
+            metadata.target.constructor.name === target?.name)
 
-        filteredFields.forEach(field => {
+        const reqArgs = req[type]
+        const argsObj = target ? new target() : reqArgs[propertyKey]
+
+        targetFields.forEach(field => {
             const { propertyKey, nullable } = field
             const value = reqArgs[field.propertyKey]
 
             if (!nullable && value === undefined) {
                 errs.push({
-                    type: 'MISSING_FIELD',
+                    type: ErrorType.MissingField,
                     message: `'${propertyKey}' field is missing`
                 })
             }
 
-            argsObj[field.propertyKey] = reqArgs[field.propertyKey]
+            argsObj[field.propertyKey] = value
         })
+
+        if (target) {
+            const errors = validateSync(
+                argsObj,
+                { forbidUnknownValues: true, skipMissingProperties: true }
+            )
+            const descriptions: string[] = []
+            errors.map(err => {
+                const { constraints } = err
+                if (constraints) {
+                    Object.keys(constraints).forEach(key => {
+                        descriptions.push(constraints[key])
+                    })
+                }
+            })
+
+            descriptions.forEach(des => errs.push({
+                type: ErrorType.TypeValidation,
+                message: des
+            }))
+        }
 
         returnedArguments[arg.index] = argsObj
     })

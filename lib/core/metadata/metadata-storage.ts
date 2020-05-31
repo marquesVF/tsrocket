@@ -3,14 +3,19 @@ import { Express, Router, Request, Response } from 'express'
 import { sanitizePath } from '../utils/sanitizers'
 import { RestController } from '../rest-controller'
 import { Container } from '../container'
-import { validate } from '../utils/validate'
+import { validateRequestParameters } from '../utils/validate'
 import { requestStatus } from '../utils/request'
+import logger from '../../logger'
+import { getMilliseconds } from '../../utils/time'
+import { Server } from '../server'
+import { ResponseInterceptor } from '../../types'
 
 import {
     ControllerMetadata,
     RouteMetadata,
     ArgMetadata,
-    InputFieldMetadata
+    InputFieldMetadata,
+    ResponseInterceptorMetadata
 } from './types'
 
 export class MetadataStorage {
@@ -20,6 +25,20 @@ export class MetadataStorage {
     private routes: RouteMetadata[] = []
     private args: ArgMetadata[] = []
     private fields: InputFieldMetadata[] = []
+    private controllerResponseInterceptors: ResponseInterceptorMetadata[] = []
+
+    private findResponseInterceptor(controller: string): ResponseInterceptor {
+        const controllerInterceptor = this.controllerResponseInterceptors
+            .find(inter => inter.controller === controller)
+
+        if (controllerInterceptor) {
+            const { interceptor } = controllerInterceptor
+
+            return interceptor
+        }
+
+        return Server.globalResponseInterceptor
+    }
 
     private buildRoute(route: RouteMetadata) {
         const { controller, propertyKey, path, method } = route
@@ -36,7 +55,7 @@ export class MetadataStorage {
         const controllerObject: RestController = Container.get(target)
         const handler = async (req: Request, res: Response) => {
             const { parameters, errors }
-                = validate(req, this.fields, argMetadata)
+                = validateRequestParameters(req, this.fields, argMetadata)
 
             if (errors) {
                 res.status(400).send({ errors })
@@ -44,10 +63,27 @@ export class MetadataStorage {
                 return
             }
 
-            const result = await controllerObject[propertyKey](...parameters)
-            const response = { data: result }
+            const interceptor = this.findResponseInterceptor(controller)
 
-            res.status(requestStatus(method)).send(response)
+            const requestDestination = controllerObject.constructor.name
+            try {
+                const processStart = getMilliseconds()
+                const result
+                    = await controllerObject[propertyKey](...parameters)
+                const timeConsumed = getMilliseconds() - processStart
+                const response = interceptor.intercept(result)
+
+                // eslint-disable-next-line max-len
+                logger.info(`[${method}] request to ${requestDestination} '${path}' ${timeConsumed} ms`)
+
+                res.status(requestStatus(method)).send(response)
+            } catch (err) {
+                // eslint-disable-next-line max-len
+                logger.error(`processing the request to ${requestDestination} '${path}': ${err}`)
+                const response = interceptor.intercept(undefined, err)
+
+                res.status(500).send(response)
+            }
         }
 
         router[method](path, handler)
@@ -70,6 +106,10 @@ export class MetadataStorage {
 
     storeInputField(data: InputFieldMetadata) {
         this.fields.push(data)
+    }
+
+    storeResponseInterceptor(data: ResponseInterceptorMetadata) {
+        this.controllerResponseInterceptors.push(data)
     }
 
     buildRoutes(app: Express) {

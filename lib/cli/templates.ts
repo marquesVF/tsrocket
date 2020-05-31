@@ -1,14 +1,20 @@
 import fs from 'fs'
 
-import handlebars from 'handlebars'
+import { compile, registerPartial } from 'handlebars'
 
 type ParseArgument = { [key: string]: any }
 
-export const TEMPLATES_FOLDER = `${__dirname}/templates`
+export const TEMPLATES_PATH = `${__dirname}/templates`
+
+function compileTemplate(template: string) {
+    return compile(
+        fs.readFileSync(`${TEMPLATES_PATH}/${template}`, 'utf8')
+    )
+}
+
+registerPartial('relations', compileTemplate('partials/model-relations.hbs'))
+registerPartial('imports', compileTemplate('partials/model-imports.hbs'))
 
 export function parse(template: string, args: ParseArgument) {
-    const templatePath = `${TEMPLATES_FOLDER}/${template}`
-    const templateFile = fs.readFileSync(templatePath, 'utf8')
-
-    return handlebars.compile(templateFile)(args)
+    return compileTemplate(template)(args)
 }

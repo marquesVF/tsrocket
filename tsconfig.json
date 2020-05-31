@@ -19,7 +19,8 @@
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "skipLibCheck": true,
-        "noImplicitAny": true
+        "noImplicitAny": true,
+        "strictPropertyInitialization": false
     },
     "include": [
         "lib/**/*"
