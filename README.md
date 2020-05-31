@@ -3,7 +3,37 @@ Ease up web APIs development in Typescript with scaffolding, dependency injectio
 
 ## What's tsrocket?
 
-`tsrocket` is composed of a lightweight REST framework, dependecy injection, cli and code generation. A `tsrocket` project has four layers (controllers, models, repositories and services) and it is structured as follows:
+`tsrocket` is a lightweight REST framework with dependecy injection, CLI and code scaffolding. The ideia is to offer a well defined project strucuture for API development. A `tsrocket` project has four layers: controllers, models/DTOs, repositories and services.
+
+### Controller layer
+
+The Controller layer is responsible for handling incomming HTTP requests and provide a suitable response.
+
+### Model and DTO layer
+
+The Model layer represents the domain model. In tsrcoket, database-backed model classes are [TypeORM's](https://github.com/typeorm/typeorm) [entities](https://typeorm.io/#/entities).
+
+DTO stands for Data Transfer Object. In `tsrocket`, DTOs represent what the controller should expect as inputs in the requests.
+
+### Repository layer
+
+The Repository layer is a collection of TypeORM [custom repository](https://typeorm.io/#/custom-repository/custom-repository-extends-standard-repository). Any model manipulation or validation should be included in it.
+
+### Service layer
+
+All business logic of your application should reside in the Service layer. `tsrocket` has a built-in service injection inspired by [typedi](https://github.com/typestack/typedi) and [typeorm-typedi-extensions](https://github.com/typeorm/typeorm-typedi-extensions).
+
+## Quick Start
+
+The first thing we need to do is to install the `tsrocket` package. `tsrocket` was developed and tested for node version `>=12.14.1`
+
+`npm install -g tsrocket`
+
+Then, we can use tsrocket's cli `tsr` to create an application. To do so, run the following command:
+
+`tsr new -y sample-api`
+
+`tsrocket` will generate a project structured as follows with everything configured for your application to run in development mode.
 
 ```
 sample-api/
@@ -21,38 +51,6 @@ sample-api/
 ├── tsconfig.json
 └── README.md
 ```
-
-### Controller layer
-
-The Controller layer is responsible for handling incomming HTTP requests and provide a suitable response.
-
-### DTO layer
-
-DTO stands for Data Transfer Object. In `tsrocket`, the DTO layer is responsible to represent what the controller should expect as inputs from the requests.
-
-### Model layer
-
-The Model layer represents the domain model. In tsrcoket, database-backed model classes are [TypeORM's](https://github.com/typeorm/typeorm) [entities](https://typeorm.io/#/entities).
-
-### Repository layer
-
-The Repository layer is a collection of TypeORM [custom repository](https://typeorm.io/#/custom-repository/custom-repository-extends-standard-repository). Any model manipulation or validation should be included in it.
-
-### Service layer
-
-All business logic of your application should reside in the Service layer. `tsrocket` has a built-in service injection inspired by [typedi](https://github.com/typestack/typedi) and [typeorm-typedi-extensions](https://github.com/typeorm/typeorm-typedi-extensions).
-
-## Quick Start
-
-The first thing we need to do is to install the `tsrocket` package. It's worth notice that `tsrocket` was developed and tested for node version `>=12.14.1`
-
-`npm install -g tsrocket`
-
-Then, we can use tsrocket's cli `tsr` to create an application. To do so, run the following command:
-
-`tsr new -y sample-api`
-
-`tsrocket` will generate the project folder structure and basic files for your application to run.
 
 If we open the file `src/server.ts`:
 
@@ -81,7 +79,7 @@ $ npm run dev
 info: listening at port 3000
 ```
 
-By default, `tsrocket` uses sqlite as database. We may want to change it when running the application in production. To do so, we can update the `src/config.ts` file. The [TypeORM connection documentation](https://typeorm.io/#/connection-options) might help.
+By default, `tsrocket` uses sqlite as database. We may want to change it to run the application in production. To do so, we can update the `src/config.ts` file. The [TypeORM connection documentation](https://typeorm.io/#/connection-options) might help.
 
 We can run `tsr -help` if we get stuck.
 
@@ -110,7 +108,7 @@ export default class User {
 }
 ```
 
-A TypeORM repository also:
+A TypeORM repository:
 
 ```typescript
 // src/repositories/post.ts
@@ -123,30 +121,11 @@ export default class UserRepository extends Repository<User> {
 }
 ```
 
-We can find a TypeORM migration file inside the migrations folder.
+And a TypeORM migration file inside the migrations folder. To apply the migration, we can run `npm run orm migration:run`
 
-We can run the following command to get more information about `tsr` model generation:
+We can run `tsr generate model --h` to get more information about `tsr` model generation:
 
-```bash
-$ tsr generate model --h
-tsr generate model <name> [properties...]
-
-Generate a new model with its properties
-
-Positionals:
-  name        model name                                     [string] [required]
-  properties  model properties (format: <name>:<type>, <name>?:<type> for
-              nullable or <model>:<OneToMany|ManyToMany|ManyToOne|OneToOne> to
-              model relation)                              [array] [default: []]
-
-Options:
-  --version         Show version number                                [boolean]
-  -h, --help        Show help                                          [boolean]
-  --controller, -c  generate controller with CRUD functionalities      [boolean]
-  --service, -s     generate model service with CRUD functionalities   [boolean]
-```
-
-Properties: `<name>:<type>`, `<name>?:<type>`, `<modelName>:<hasMany|hasOne>`
+### Service and Controller generation
 
 After we generate the User model and its repository. We can use `tsrocket` cli to generate a service to manipulate the repository. Run `tsr g service user` to generate the following file:
 
@@ -189,7 +168,7 @@ For example:
 // src/controller/user.ts
 import { Controller, Get, RestController, Params, Put, Body, Post, Inject, Delete } from 'tsrocket'
 import UserService from '../services/user'
-import { UserFindDto, UserDto } from '../dtos/user'
+import { UserDto } from '../dtos/user'
 
 @Controller('/users')
 export default class UserController extends RestController {
@@ -203,16 +182,16 @@ export default class UserController extends RestController {
     }
 
     @Get('/:id')
-    find(@Params(UserFindDto) findDto: UserFindDto) {
-        return this.userService.find(findDto.id)
+    find(@Params() id: string) {
+        return this.userService.find(id)
     }
 
     @Put('/:id')
     update(
-        @Params(UserFindDto) findDto: UserFindDto,
+        @Params() id: string,
         @Body(UserDto) userDto: UserDto
     ) {
-        this.userService.update(findDto.id, userDto)
+        this.userService.update(id, userDto)
     }
 
     @Post('/')
@@ -221,14 +200,14 @@ export default class UserController extends RestController {
     }
 
     @Delete('/:id')
-    delete(@Params(UserFindDto) findDto: UserFindDto) {
-        this.userService.delete(findDto.id)
+    delete(@Params() id: string) {
+        this.userService.delete(id)
     }
 
 }
 ```
 
-We can use the controller generator to create an empty controller. Running `tsr g controller user user` will generate the following file:
+We can use the controller generator to create a controller. Running `tsr g controller user user` will generate the following file:
 
 ```typescript
 // src/controllers/user.ts
@@ -251,11 +230,13 @@ export default class UserController extends RestController {
 
 As we can se, `tsrocket` generated a controller with the user service already injected with the `@Inject` decorator. The first argument of the `tsr g controller` command is the name of the controller and any following argument will be treated as dependency injection by the `tsrocket` scaffold.
 
-We can use `@Get` to indicate a HTTP *get* request handler, `@Post` for a *post* handler and so on. `tsrocket` knows what HTTP status to send depending on the HTTP method and the handler response (if it returns something valid or throws an error, for instance). It's noticible that we need to pass a path as argument to every of these decorators. But we don't need to worry, since `tsr` is a powerfool scaffold tool and it can generate almost everything we need to build a REST api.
+### Request handler decorators
 
-We can use the `tsrocket` parameter decorators to validate and make sure that the controller handlers receive the expected data from the request. The `@Body` and `@Params` decorators reflects [express](https://expressjs.com/en/api.html#req) *body* and *params* properties from a *Request* instance. Both of these decorators receive a DTO class that `tsrocket` will use to validate the received data.
+We can use `@Get` to indicate a HTTP *get* request handler, `@Post` for a *post* handler and so on. `tsrocket` knows what HTTP status to send depending on the HTTP method and the handler response (if it returns something valid or throws an error, for instance). We need to pass a path as argument to every of these HTTP method decorators. The `@Body` and `@Params` decorators reflects [express](https://expressjs.com/en/api.html#req) *body* and *params* properties from a *Request* instance.
 
-For example:
+### Request handler argument validator 
+
+We can decorate DTO class properties to validate and make sure that the controller handlers receive the expected data from the request. The `@InputField` is used to indicate an DTO attribute. We can also use [class-validator](https://github.com/typestack/class-validator) decorators, such as `IsString` and `IsEmail` for instance.
 
 ```typescript
 // src/dtos/user.ts
@@ -264,33 +245,86 @@ import { InputField } from 'tsrocket'
 export class UserDto {
 
     @InputField()
+    @IsString()
     name: string
 
-    @InputField({ nullable: true })
-    lastName?:string
-
     @InputField()
+    @IsEmail()
     email: string
 
-}
-
-export class UserFindDto {
-
-    @InputField()
-    id: string
+    @InputField({ nullable: true })
+    @IsString()
+    lastName?:string
 
 }
 ```
 
-The `@InputField` is used to indicate an DTO attribute.
+### TypeORM integration
 
-After using `tsr` to scaffold a model with its repository, service and controller, we can run `npm run orm` to execute `typeorm` commands. For instance, we can run the generated migrations: `npm run orm migration:run`.
+If we need to, we can run `npm run orm` to execute `typeorm` commands. For instance, we can apply the migrations by typing the following command in the terminal `npm run orm migration:run`.
+
+### Response Interceptor
+
+By default, `tsrocket` uses the following structure as request response:
+
+```json
+{
+    data: { ... },
+    error: { ... }
+}
+```
+
+We can change this behaviour in two different ways: controller and application level.
+
+We need to inplement a ResponseInterceptor class:
+
+```typescript
+class CustomInterceptor implements ResponseInterceptor {
+
+    intercept(response?: any, error?: Error) {
+        console.log('Decorating the request response')
+
+        const decoratedResponse = {
+            response,
+            error
+        }
+
+        return decoratedResponse
+    }
+
+}
+```
+
+So the response will be:
+
+```json
+{
+    reponse: { ... }
+    error: { ... }
+}
+```
+
+To apply this interceptor to a specific controller, we can use the `@UseResponseInterceptor` decorator:
+
+```typescript
+@UseResponseInterceptor(new CustomInterceptor())
+@Controller('/cars')
+export default class CarController extends RestController { }
+```
+
+Or we can use the `CustomInterceptor` in the application level:
+
+```typescript
+// src/server.ts
+const server = new Server(config)
+server.useGlobalResponseInterceptor(new CustomInterceptor())
+```
 
 ## Contributing
 
 1. Clone the repository.
-2. Run `cd tsrocket && npm link  .` to use the cloned repository dependency by another project.
-3. Inside another directory, run `tsr new -y test-project` to create a `tsrocket` project, and `cd test-project && npm link tsrocket` for you to test your chances in the `tsrocke` source code.
+2. Run `cd tsrocket && npm link  .`
+3. Inside another directory, run `tsr new -y test-project` to create a `tsrocket` project, and `cd test-project && npm link tsrocket` for you to test your chances in `tsrocket` source code.
 
 ### Commit guidelines
 
