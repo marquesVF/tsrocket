@@ -269,8 +269,8 @@ By default, `tsrocket` uses the following structure as request response:
 
 ```json
 {
-    data: { ... },
-    error: { ... }
+    "data": { },
+    "error": { }
 }
 ```
 
@@ -299,8 +299,8 @@ So the response will be:
 
 ```json
 {
-    reponse: { ... }
-    error: { ... }
+    "reponse": { },
+    "error": { }
 }
 ```
 
@@ -319,37 +319,3 @@ Or we can use the `CustomInterceptor` in the application level:
 const server = new Server(config)
 server.useGlobalResponseInterceptor(new CustomInterceptor())
 ```
-
-## Contributing
-
-1. Clone the repository.
-2. Run `cd tsrocket && npm link  .`
-3. Inside another directory, run `tsr new -y test-project` to create a `tsrocket` project, and `cd test-project && npm link tsrocket` for you to test your chances in `tsrocket` source code.
-
-### Commit guidelines
-
-`tsrocket` commit message format is based on [Angular's community](https://github.com/angular/angular/blob/master/CONTRIBUTING.md).
-
-Each commit message consists of a **header** and a **body**. The header has a special format that includes a **type**, a **scope** and a **subject**:
-
-```
-<type>(<scope>): <subject>
-<BLANK LINE>
-<body>
-```
-
-The **header** is mandatory and the **scope** of the header is optional.
-
-#### Type
-
-Must be one of the following:
-
-* **build**: Changes that affect the build system or external dependencies (example scopes: gulp, broccoli, npm)
-* **ci**: Changes to our CI configuration files and scripts (example scopes: Circle, BrowserStack, SauceLabs)
-* **docs**: Documentation only changes
-* **feat**: A new feature
-* **fix**: A bug fix
-* **perf**: A code change that improves performance
-* **refactor**: A code change that neither fixes a bug nor adds a feature
-* **style**: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
-* **test**: Adding missing tests or correcting existing tests
