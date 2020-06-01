@@ -25,7 +25,7 @@ export type RouteMetadata = {
 
 export type InjectableMetadata = {
     id: Identifier
-    instance: any
+    instance: Object
 }
 
 export type ArgType = 'body' | 'query' | 'params'
