@@ -317,5 +317,5 @@ Or we can use the `CustomInterceptor` in the application level:
 ```typescript
 // src/server.ts
 const server = new Server(config)
-server.useGlobalResponseInterceptor(new CustomInterceptor())
+server.useResponseInterceptor(new CustomInterceptor())
 ```
