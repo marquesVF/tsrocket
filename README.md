@@ -139,12 +139,13 @@ export default class UserService {
 }
 ```
 
-We can use use the `@InjectRepository` decorator to inject the user repository:
+We can use use the `@InjectRepository` decorator to inject the user repository and `@Inject` to inject another service.
 
 ```typescript
 // src/services/user.ts
 import { Service, InjectRepository } from 'tsrocket'
 import UserRepository from '../repositories/user'
+import AnotherService from './another-service'
 
 @Service()
 export default class UserService {
@@ -152,8 +153,25 @@ export default class UserService {
     @InjectRepository(UserRepository)
     private readonly repository: UserRepository
     
+    @Inject(AnotherService)
+    private readonly anotherService: AnotherService
+
+}
+```
+
+It's also possible to use a factory to dynamically use a instance when injecting a service. To do so, we need to implement the `InjectableFactory` interface. This is useful when we want to use mocked services when testing for instance:
+
+```typescript
+class UserServiceFactory implements InjectableFactory {
+    getInstance(): Object {
+        return process.env['ENV'] === 'test'
+            ? new MockedUserService()
+            : new UserService()
+    }
 }
 
+@Service(UserServiceFactory)
+export default class UserService { }
 ```
 
 In many aplications, we need a **service** to handle basic CRUD operations using the model repository. We can run `tsr g model -s user name:string 'email?:string'` to generate a model with its repository, migration and CRUD ready service.
