@@ -9,6 +9,7 @@ import logger from '../../logger'
 type NewServerArguments = {
     name: string
     y: boolean
+    v: boolean
 }
 
 function createDefaultFolders(name: string) {
@@ -78,7 +79,7 @@ function inquireAppContext(appName: string) {
 }
 
 export function generateBaseProject(args: NewServerArguments) {
-    const { name, y: defaults } = args
+    const { name, y: defaults, v: verbose } = args
     logger.info('setting up your awesome project...')
 
     const appRoot = createDefaultFolders(name)
@@ -96,7 +97,11 @@ export function generateBaseProject(args: NewServerArguments) {
 
     logger.info('installing dependencies...')
 
-    child.execSync('npm install', { stdio: 'inherit' })
+    if (verbose) {
+        child.execSync('npm install', { stdio: 'inherit' })
+    } else {
+        child.execSync('npm install', { stdio: 'ignore' })
+    }
 
     logger.info('all done!')
 }
