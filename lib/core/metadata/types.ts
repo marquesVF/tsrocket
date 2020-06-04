@@ -1,5 +1,6 @@
 import { Identifier } from '../types/identifier'
 import { ResponseInterceptor } from '../../types'
+import { FieldOptions } from '../types/decorator-types'
 
 export type RouteArguments = {
     target: Object
@@ -43,7 +44,7 @@ export type ArgMetadata = {
 export type InputFieldMetadata = {
     target: any
     propertyKey: string
-    nullable: boolean
+    options?: FieldOptions
 }
 
 export type ResponseInterceptorMetadata = {

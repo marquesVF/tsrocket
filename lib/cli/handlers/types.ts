@@ -12,10 +12,13 @@ export type GeneratorArgument = {
     name: string
 }
 
-export type Column = { [key: string]: any } & {
+export type Column = {
     name: string
     type: string
+    validator: string
+    fieldOptions?: string
     nullable: boolean
+    transformType?: string
 }
 
 export type Relation = 'OneToMany' | 'ManyToOne' | 'OneToOne' | 'ManyToMany'
@@ -58,7 +61,8 @@ export type ModelGeneratorArguments = {
 
 export type DtoData = {
     name: string
-    fields: Column
+    validatorImports?: string
+    fields?: Column[]
 }
 
 export type ServiceData = {

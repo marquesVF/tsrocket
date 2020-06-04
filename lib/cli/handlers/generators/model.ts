@@ -13,11 +13,17 @@ import {
     ModelRelation,
     ModelProperty,
     ModelData,
-    RelatedModelUpdate
+    RelatedModelUpdate,
+    DtoData
 } from '../types'
 import { isRelation } from '../utils/type-checker'
 import { handleRelation } from '../utils/handle-relations'
 import { updateModel } from '../utils/update-model'
+import {
+    DtoValidator,
+    processType,
+    processFieldOptions
+} from '../utils/model-type-validator'
 
 type Properties = ModelProperty & {
     modelUpdates: RelatedModelUpdate[]
@@ -45,7 +51,14 @@ function processProperties(name: string, properties: string[]): Properties {
                 modelUpdates.push(relatedModelUpdate)
             }
         } else {
-            columns.push({ name: propName, type, nullable })
+            // TODO handle an invalid type
+            columns.push({
+                name: propName,
+                validator: DtoValidator[type],
+                nullable,
+                fieldOptions: processFieldOptions(type, nullable),
+                type: processType(type)
+            })
         }
     })
 
@@ -87,8 +100,12 @@ function generateRelatedFiles(
     generateReposiory(name)
 
     if ((shouldGenerateService || shouldGenerateController) && properties) {
-        const dtoData = {
+        const validatorImports = fields
+            ? [...new Set(fields.map(field => field.validator))].join(', ')
+            : undefined
+        const dtoData: DtoData = {
             name: pascalCase(name),
+            validatorImports,
             fields
         }
         generateFile(name, 'dto', dtoData)
