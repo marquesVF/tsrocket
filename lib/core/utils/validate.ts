@@ -22,13 +22,16 @@ export function validateRequestParameters(
     const returnedArguments: any[] = []
 
     argMetadatas.forEach(arg => {
-        const { type, target, propertyKey } = arg
+        const { type, target, index  } = arg
 
         const targetFields = fields.filter(metadata =>
             metadata.target.constructor.name === target?.name)
 
         const reqArgs = req[type]
-        const argsObj = target ? new target() : reqArgs[propertyKey]
+        const argsObj = target
+            ? new target()
+            // FIX-ME it may be error prone
+            : reqArgs[Object.keys(reqArgs)[index]]
 
         targetFields.forEach(field => {
             const { propertyKey, options } = field
@@ -68,7 +71,7 @@ export function validateRequestParameters(
             }))
         }
 
-        returnedArguments[arg.index] = argsObj
+        returnedArguments[index] = argsObj
     })
 
     const returnedErrors = errs.length > 0 ? errs : undefined
