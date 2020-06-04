@@ -3,11 +3,14 @@ import "reflect-metadata"
 import {
     SqliteConnectionOptions
 } from 'typeorm/driver/sqlite/SqliteConnectionOptions'
-import { ServerConfiguration, DEVELOPMENT_DATABASE } from 'tsrocket'
+import { ServerConfiguration } from 'tsrocket'
 
+/*
+ * You should change the database in production
+ */
 const database: SqliteConnectionOptions = {
     type: 'sqlite',
-    database: DEVELOPMENT_DATABASE,
+    database: 'development.sqlite',
     entities: ['src/models/*.ts'],
     migrations: ['src/migrations/*.ts'],
     cli: {

@@ -4,7 +4,7 @@ import child from 'child_process'
 import promptSync from 'prompt-sync'
 
 import { TEMPLATES_PATH, parse } from '../templates'
-import logger from '../../logger'
+import { Logger } from '../../logger'
 import { generateGitRepository } from '../integration/git'
 
 type NewServerArguments = {
@@ -39,7 +39,7 @@ function createDefaultFolders(name: string) {
         fs.writeFileSync(`${rootPath}/tests/.gitkeep`, {})
     } catch (err) {
         // TODO handle it properly
-        logger.error(err)
+        Logger.error(err)
     }
 
     return rootPath
@@ -78,7 +78,7 @@ function copyDefaultFiles(rootPath: string) {
 
 function inquireAppContext(appName: string) {
     const prompt = promptSync({ sigint: true })
-    logger.debug('Inquirying project information')
+    Logger.debug('Inquirying project information')
 
     const appDescription = prompt('Project description: ')
     const appAuthor = prompt('Project author: ')
@@ -89,7 +89,7 @@ function inquireAppContext(appName: string) {
 
 export function generateBaseProject(args: NewServerArguments) {
     const { name, y: defaults, v: verbose } = args
-    logger.info('setting up your awesome project...')
+    Logger.info(`setting up ${name}...`)
 
     const appRoot = createDefaultFolders(name)
     copyDefaultFiles(appRoot)
@@ -104,12 +104,12 @@ export function generateBaseProject(args: NewServerArguments) {
     const appPackage = `${appRoot}/package.json`
     fs.writeFileSync(appPackage, packageJson)
 
-    logger.info('installing dependencies...')
+    Logger.info('installing dependencies...')
 
     const stdio = verbose ? 'inherit' : 'ignore'
     child.execSync('npm install', { stdio })
 
     generateGitRepository(appRoot, stdio)
 
-    logger.info('all done!')
+    Logger.info('all done!')
 }

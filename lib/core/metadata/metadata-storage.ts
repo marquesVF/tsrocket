@@ -5,7 +5,7 @@ import { RestController } from '../rest-controller'
 import { Container } from '../container'
 import { validateRequestParameters } from '../utils/validate'
 import { requestStatus } from '../utils/request'
-import logger from '../../logger'
+import { Logger } from '../../logger'
 import { getMilliseconds } from '../../utils/time'
 import { Server } from '../server'
 import { ResponseInterceptor } from '../../types'
@@ -74,12 +74,12 @@ export class MetadataStorage {
                 const response = interceptor.intercept(result)
 
                 // eslint-disable-next-line max-len
-                logger.info(`[${method}] request to ${requestDestination} '${path}' ${timeConsumed} ms`)
+                Logger.info(`[${method}] request to ${requestDestination} '${path}' ${timeConsumed} ms`)
 
                 res.status(requestStatus(method)).send(response)
             } catch (err) {
                 // eslint-disable-next-line max-len
-                logger.error(`processing the request to ${requestDestination} '${path}': ${err}`)
+                Logger.error(`processing the request to ${requestDestination} '${path}': ${err}`)
                 const response = interceptor.intercept(undefined, err)
 
                 res.status(500).send(response)
