@@ -1,5 +1,3 @@
-import child from 'child_process'
-
 import { pascalCase } from 'change-case'
 import { plural } from 'pluralize'
 
@@ -24,6 +22,7 @@ import {
     processType,
     processFieldOptions
 } from '../utils/model-type-validator'
+import { generateMigration } from '../../integration/typeorm'
 
 type Properties = ModelProperty & {
     modelUpdates: RelatedModelUpdate[]
@@ -153,11 +152,5 @@ export function generateModel(args: ModelGeneratorArguments) {
     }
 
     generateRelatedFiles(name, c, s, modelData.columns, properties)
-
-    // TODO does not generate duplicated migrations
-    { child.execSync(
-        // eslint-disable-next-line max-len
-        `npx ts-node node_modules/typeorm/cli migration:generate --name ${name}-migration`,
-        { stdio: 'inherit' }
-    ) }
+    generateMigration(name)
 }

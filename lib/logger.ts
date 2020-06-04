@@ -16,4 +16,4 @@ function logger(level: string) {
 
 const logLevel = process.env.LOG ? process.env.LOG : 'info'
 
-export default logger(logLevel)
+export const Logger = logger(logLevel)

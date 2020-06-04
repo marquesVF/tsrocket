@@ -25,7 +25,7 @@ export default class {{ name }}Service {
     }
 
     async find(id: string) {
-        return this.repository.findOne(id)
+        return this.repository.findOneOrFail(id)
     }
 
     async create({{repository.variable}}: {{repository.model}}Dto) {
