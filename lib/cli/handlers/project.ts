@@ -5,6 +5,7 @@ import promptSync from 'prompt-sync'
 
 import { TEMPLATES_PATH, parse } from '../templates'
 import logger from '../../logger'
+import { generateGitRepository } from '../integration/git'
 
 type NewServerArguments = {
     name: string
@@ -97,11 +98,10 @@ export function generateBaseProject(args: NewServerArguments) {
 
     logger.info('installing dependencies...')
 
-    if (verbose) {
-        child.execSync('npm install', { stdio: 'inherit' })
-    } else {
-        child.execSync('npm install', { stdio: 'ignore' })
-    }
+    const stdio = verbose ? 'inherit' : 'ignore'
+    child.execSync('npm install', { stdio })
+
+    generateGitRepository(appRoot, stdio)
 
     logger.info('all done!')
 }

@@ -22,7 +22,7 @@ import {
     processType,
     processFieldOptions
 } from '../utils/model-type-validator'
-import { generateMigration } from '../../wrappers/typeorm'
+import { generateMigration } from '../../integration/typeorm'
 
 type Properties = ModelProperty & {
     modelUpdates: RelatedModelUpdate[]
