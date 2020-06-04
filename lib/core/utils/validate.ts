@@ -31,8 +31,11 @@ export function validateRequestParameters(
         const argsObj = target ? new target() : reqArgs[propertyKey]
 
         targetFields.forEach(field => {
-            const { propertyKey, nullable } = field
-            const value = reqArgs[field.propertyKey]
+            const { propertyKey, options } = field
+            const nullable = options?.nullable ?? false
+            const value = options && options.transform
+                ? options.transform(reqArgs[field.propertyKey])
+                : reqArgs[field.propertyKey]
 
             if (!nullable && value === undefined) {
                 errs.push({
