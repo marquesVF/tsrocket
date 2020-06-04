@@ -2,7 +2,7 @@ import express from 'express'
 import { Connection } from 'typeorm'
 
 import { ServerConfiguration, ResponseInterceptor } from '../types'
-import logger from '../logger'
+import { Logger } from '../logger'
 
 import { loadControllers } from './utils/loaders'
 import { getMetadataStorage } from './metadata/metadata-storage'
@@ -31,11 +31,11 @@ export class Server {
     }
 
     listen() {
-        logger.info(`listening at port ${this.config.port}`)
+        Logger.info(`listening at port ${this.config.port}`)
         Server.httpServer.listen(this.config.port)
     }
 
-    useGlobalResponseInterceptor(interceptor: ResponseInterceptor) {
+    useResponseInterceptor(interceptor: ResponseInterceptor) {
         Server.globalResponseInterceptor = interceptor
     }
 

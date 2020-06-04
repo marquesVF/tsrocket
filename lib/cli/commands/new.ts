@@ -13,5 +13,10 @@ export const builder = (yargs: Argv<{}>) => {
         type: 'boolean',
         description: 'Create project with default values'
     })
+    yargs.option('verbose', {
+        alias: 'v',
+        type: 'boolean',
+        description: 'Print subcommand outputs'
+    })
 }
 export const handler = generateBaseProject

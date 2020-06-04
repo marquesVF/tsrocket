@@ -9,3 +9,7 @@ export type ServerConfiguration = {
 export interface ResponseInterceptor {
     intercept(response: any, error?: Error): Promise<any> | any
 }
+
+export interface InjectableFactory {
+    getInstance(): Object
+}

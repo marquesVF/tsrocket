@@ -4,11 +4,13 @@ import child from 'child_process'
 import promptSync from 'prompt-sync'
 
 import { TEMPLATES_PATH, parse } from '../templates'
-import logger from '../../logger'
+import { Logger } from '../../logger'
+import { generateGitRepository } from '../integration/git'
 
 type NewServerArguments = {
     name: string
     y: boolean
+    v: boolean
 }
 
 function createDefaultFolders(name: string) {
@@ -37,7 +39,7 @@ function createDefaultFolders(name: string) {
         fs.writeFileSync(`${rootPath}/tests/.gitkeep`, {})
     } catch (err) {
         // TODO handle it properly
-        logger.error(err)
+        Logger.error(err)
     }
 
     return rootPath
@@ -64,11 +66,19 @@ function copyDefaultFiles(rootPath: string) {
         `${TEMPLATES_PATH}/config.ts.hbs`,
         `${rootPath}/src/config.ts`
     )
+    fs.copyFileSync(
+        `${TEMPLATES_PATH}/jest.config.js.hbs`,
+        `${rootPath}/jest.config.js`
+    )
+    fs.copyFileSync(
+        `${TEMPLATES_PATH}/jest-config.json.hbs`,
+        `${rootPath}/jest-config.json`
+    )
 }
 
 function inquireAppContext(appName: string) {
     const prompt = promptSync({ sigint: true })
-    logger.debug('Inquirying project information')
+    Logger.debug('Inquirying project information')
 
     const appDescription = prompt('Project description: ')
     const appAuthor = prompt('Project author: ')
@@ -78,8 +88,8 @@ function inquireAppContext(appName: string) {
 }
 
 export function generateBaseProject(args: NewServerArguments) {
-    const { name, y: defaults } = args
-    logger.info('setting up your awesome project...')
+    const { name, y: defaults, v: verbose } = args
+    Logger.info(`setting up ${name}...`)
 
     const appRoot = createDefaultFolders(name)
     copyDefaultFiles(appRoot)
@@ -94,9 +104,12 @@ export function generateBaseProject(args: NewServerArguments) {
     const appPackage = `${appRoot}/package.json`
     fs.writeFileSync(appPackage, packageJson)
 
-    logger.info('installing dependencies...')
+    Logger.info('installing dependencies...')
 
-    child.execSync('npm install', { stdio: 'inherit' })
+    const stdio = verbose ? 'inherit' : 'ignore'
+    child.execSync('npm install', { stdio })
 
-    logger.info('all done!')
+    generateGitRepository(appRoot, stdio)
+
+    Logger.info('all done!')
 }
