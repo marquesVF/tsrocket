@@ -66,6 +66,14 @@ function copyDefaultFiles(rootPath: string) {
         `${TEMPLATES_PATH}/config.ts.hbs`,
         `${rootPath}/src/config.ts`
     )
+    fs.copyFileSync(
+        `${TEMPLATES_PATH}/jest.config.js.hbs`,
+        `${rootPath}/jest.config.js`
+    )
+    fs.copyFileSync(
+        `${TEMPLATES_PATH}/jest-config.json.hbs`,
+        `${rootPath}/jest-config.json`
+    )
 }
 
 function inquireAppContext(appName: string) {
