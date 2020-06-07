@@ -35,8 +35,10 @@ export class Server {
         Server.httpServer.listen(this.config.port)
     }
 
-    useResponseInterceptor(interceptor: ResponseInterceptor) {
-        Server.globalResponseInterceptor = interceptor
+    useResponseInterceptor(
+        interceptor: new (...args: any[]) => ResponseInterceptor
+    ) {
+        Server.globalResponseInterceptor = Container.get(interceptor)
     }
 
 }

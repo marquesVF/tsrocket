@@ -3,7 +3,7 @@ Ease up web APIs development in Typescript with scaffolding, dependency injectio
 
 ## What's tsrocket?
 
-`tsrocket` is a lightweight REST framework with dependecy injection, CLI and code scaffolding. The ideia is to offer a well defined project strucuture for API development. A `tsrocket` project has four layers: controllers, models/DTOs, repositories and services.
+`tsrocket` is a lightweight REST framework with dependecy injection, CLI and code scaffolding. The ideia is to offer a well defined project strucuture for API development. A `tsrocket` project has four layers: controller, model/DTO, repository and service.
 
 ### Controller layer
 
@@ -13,7 +13,7 @@ The Controller layer is responsible for handling incomming HTTP requests and pro
 
 The Model layer represents the domain model. In tsrcoket, database-backed model classes are [TypeORM's](https://github.com/typeorm/typeorm) [entities](https://typeorm.io/#/entities).
 
-DTO stands for Data Transfer Object. In `tsrocket`, DTOs represent what the controller should expect as inputs in the requests.
+DTO stands for Data Transfer Object. In `tsrocket`, DTOs represent what the controller should expect as inputs in the requests. Using DTOs, we can validate if the controller is receiving the data it's expecting, avoiding runtime errors.
 
 ### Repository layer
 
@@ -134,9 +134,7 @@ After we generate the User model and its repository. We can use `tsrocket` cli t
 import { Service } from 'tsrocket'
 
 @Service()
-export default class UserService {
-
-}
+export default class UserService { }
 ```
 
 We can use use the `@InjectRepository` decorator to inject the user repository and `@Inject` to inject another service.
@@ -159,9 +157,11 @@ export default class UserService {
 }
 ```
 
-It's also possible to use a factory to dynamically use a instance when injecting a service. To do so, we need to implement the `InjectableFactory` interface. This is useful when we want to use mocked services when testing for instance:
+It's also possible to use a factory to dynamically use a instance when injecting a service. To do so, we need to implement the `InjectableFactory` interface. This is useful when we want to use mocked services when testing for example:
 
 ```typescript
+import { InjectableFactory, Service } from 'tsrocket'
+
 class UserServiceFactory implements InjectableFactory {
     getInstance(): Object {
         return process.env['ENV'] === 'test'
@@ -246,7 +246,7 @@ export default class UserController extends RestController {
 }
 ```
 
-As we can se, `tsrocket` generated a controller with the user service already injected with the `@Inject` decorator. The first argument of the `tsr g controller` command is the name of the controller and any following argument will be treated as dependency injection by the `tsrocket` scaffold.
+As we can see, `tsrocket` generated a controller with the user service already injected with the `@Inject` decorator. The first argument of the `tsr g controller` command is the name of the controller and any following argument will be treated as dependency injection by the `tsrocket` scaffold.
 
 ### Request handler decorators
 
@@ -256,9 +256,12 @@ We can use `@Get` to indicate a HTTP *get* request handler, `@Post` for a *post*
 
 We can decorate DTO class properties to validate and make sure that the controller handlers receive the expected data from the request. The `@InputField` is used to indicate an DTO attribute. We can also use [class-validator](https://github.com/typestack/class-validator) decorators, such as `IsString` and `IsEmail` for instance.
 
+If we need to process an incoming data, we can pass a function in the `transform` option.
+
 ```typescript
 // src/dtos/user.ts
 import { InputField } from 'tsrocket'
+import { IsEmail, IsString, IsDate } from 'class-validator'
 
 export class UserDto {
 
@@ -269,6 +272,10 @@ export class UserDto {
     @InputField()
     @IsEmail()
     email: string
+
+    @InputField({ transform: (value: string) => new Date(value) })
+    @IsDate()
+    birthDate: Date
 
     @InputField({ nullable: true })
     @IsString()
@@ -325,15 +332,17 @@ So the response will be:
 To apply this interceptor to a specific controller, we can use the `@UseResponseInterceptor` decorator:
 
 ```typescript
-@UseResponseInterceptor(new CustomInterceptor())
+@UseResponseInterceptor(CustomInterceptor)
 @Controller('/cars')
 export default class CarController extends RestController { }
 ```
 
-Or we can use the `CustomInterceptor` in the application level:
+Note that, we only need to pass the class as argument. Internally, `tsrocket` uses its dependency injection mechanism.
+
+Or we can use the `CustomInterceptor` in the application level. In this case, the interceptor will be attached to every controller:
 
 ```typescript
 // src/server.ts
 const server = new Server(config)
-server.useResponseInterceptor(new CustomInterceptor())
+server.useResponseInterceptor(CustomInterceptor)
 ```
