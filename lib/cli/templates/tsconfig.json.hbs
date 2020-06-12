@@ -1,14 +1,29 @@
 {
     "compilerOptions": {
-        "outDir": "./build",
-        "lib": [ "es2018" ],
-        "target": "es2018",
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "emitDecoratorMetadata": true,
-        "strictNullChecks": true,
         "experimentalDecorators": true,
-        "strictPropertyInitialization": false,
-        "sourceMap": true
-    }
+        "emitDecoratorMetadata": true,
+        "outDir": "./build",
+        "baseUrl": ".",
+        "declaration": true,
+        "typeRoots": ["node_modules/@types"],
+        "allowJs": false,
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "lib": ["es2018"],
+        "moduleResolution": "node",
+        "strict": true,
+        "module": "commonjs",
+        "target": "es2018",
+        "strictNullChecks": true,
+        "noImplicitThis": true,
+        "noImplicitReturns": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "skipLibCheck": true,
+        "noImplicitAny": true,
+        "strictPropertyInitialization": false
+    },
+    "include": [
+        "src/**/*"
+    ]
 }
