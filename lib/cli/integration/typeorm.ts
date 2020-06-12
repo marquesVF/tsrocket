@@ -19,6 +19,13 @@ function checkPendingMigrations(): boolean {
     return Number(matches[0]) > 1
 }
 
+function createMigration(name: string) {
+    // eslint-disable-next-line max-len
+    const cmd = `npx ts-node node_modules/typeorm/cli migration:generate --name ${name}-migration`
+
+    execSync(cmd, { stdio: 'inherit' })
+}
+
 export function generateMigration(name: string) {
     if (checkPendingMigrations()) {
         Logger.warn('There is at least one pending migration')
@@ -37,13 +44,10 @@ export function generateMigration(name: string) {
 
         execSync(cmd, { stdio: 'inherit' })
 
-        generateMigration(name)
+        createMigration(name)
 
         return
     }
 
-    // eslint-disable-next-line max-len
-    const cmd = `npx ts-node node_modules/typeorm/cli migration:generate --name ${name}-migration`
-
-    execSync(cmd, { stdio: 'inherit' })
+    createMigration(name)
 }

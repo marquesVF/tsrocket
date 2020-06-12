@@ -1,4 +1,4 @@
-import { Entity, {{#if columns}}Column, {{/if}} PrimaryGeneratedColumn } from 'typeorm'
+import { Entity, {{#if columns}}Column, {{/if}} PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm'
 {{> imports}}
 
 @Entity()
@@ -6,6 +6,12 @@ export default class {{name}} {
 
     @PrimaryGeneratedColumn('uuid')
     id: number
+
+    @CreateDateColumn({ type: 'datetime' })
+    createdAt: Date
+
+    @UpdateDateColumn({ type: 'datetime' })
+    updatedAt: Date
 
     {{#each columns}}
     @Column({{#if this.nullable}}{ nullable: true }{{/if}})
