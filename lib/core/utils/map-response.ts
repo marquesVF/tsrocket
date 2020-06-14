@@ -37,8 +37,8 @@ export function mapResponse(
 
             const value = result[propertyKey]
             if (value) {
-                if (options?.transform) {
-                    const nestedMapper = options.transform()
+                if (options?.type) {
+                    const nestedMapper = options.type
                     const nestedFields = fields.filter(meta =>
                         fieldFilter(meta, nestedMapper))
 
