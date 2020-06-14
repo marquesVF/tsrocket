@@ -3,7 +3,7 @@ import { Express, Router, Request, Response } from 'express'
 import { sanitizePath } from '../utils/sanitizers'
 import { RestController } from '../rest-controller'
 import { Container } from '../container'
-import { validateRequestParameters } from '../utils/validate'
+import { RequestParamsValidator } from '../utils/validate'
 import { requestStatus } from '../utils/request'
 import { Logger } from '../../logger'
 import { getMilliseconds } from '../../utils/time'
@@ -55,8 +55,10 @@ export class MetadataStorage {
 
         const controllerObject: RestController = Container.get(target)
         const handler = async (req: Request, res: Response) => {
+            const paramValidator
+                = new RequestParamsValidator(req, this.fields, argMetadata)
             const { parameters, errors }
-                = validateRequestParameters(req, this.fields, argMetadata)
+                = paramValidator.validate()
 
             if (errors) {
                 res.status(400).send({ errors })

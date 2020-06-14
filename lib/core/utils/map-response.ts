@@ -1,6 +1,8 @@
 import { ResponseMapper, FieldMetadata } from '../metadata/types'
 import { Logger } from '../../logger'
 
+import { fieldFilter } from './field-filter'
+
 type MappedResponse = { [key: string]: any }
 
 export function mapResponse(
@@ -11,24 +13,7 @@ export function mapResponse(
     if (Array.isArray(result)) {
         return result.map(res => mapResponse(mapper, fields, res))
     } else {
-        // eslint-disable-next-line max-len
-        const fieldFilter = (metadata: FieldMetadata, mapper: ResponseMapper) => {
-            const mapperNames: string[] = [mapper.name]
-
-            // It should get inherited fields as well
-            let parent = Object.getPrototypeOf(mapper.prototype)
-            while (parent !== undefined) {
-                mapperNames.push(parent.constructor.name)
-
-                parent = parent.prototype
-                    ? Object.getPrototypeOf(parent.prototype)
-                    : undefined
-            }
-
-            return mapperNames.includes(metadata.target.constructor.name)
-        }
-
-        const targetFields = fields.filter(meta => fieldFilter(meta, mapper))
+        const targetFields = fields.filter(field => fieldFilter(field, mapper))
 
         const mappedObject: { [key: string]: any } = {}
 
@@ -39,11 +24,8 @@ export function mapResponse(
             if (value) {
                 if (options?.type) {
                     const nestedMapper = options.type
-                    const nestedFields = fields.filter(meta =>
-                        fieldFilter(meta, nestedMapper))
-
                     mappedObject[propertyKey]
-                        = mapResponse(nestedMapper, nestedFields, value)
+                        = mapResponse(nestedMapper, fields, value)
                 } else {
                     mappedObject[propertyKey] = value
                 }
