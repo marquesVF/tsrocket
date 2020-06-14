@@ -1,4 +1,4 @@
-import { Service } from "../../../lib/core/decorators";
+import { Service } from '../../../lib/core/decorators'
 
 @Service()
 export class SampleService {

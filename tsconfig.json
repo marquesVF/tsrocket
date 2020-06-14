@@ -24,6 +24,7 @@
         "strictPropertyInitialization": false
     },
     "include": [
-        "lib/**/*"
+        "lib/**/*",
+        "test/**/*"
     ]
 }

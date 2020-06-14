@@ -20,7 +20,7 @@
   },
   "scripts": {
     "watch": "tsc --watch",
-    "build": "tsc && cp -rf lib/cli/templates dist/cli",
+    "build": "tsc -p tsconfig.build.json && cp -rf lib/cli/templates dist/cli",
     "prepare": "npm run build",
     "lint": "eslint --ext .ts --cache lib",
     "test": "jest --detectOpenHandles",

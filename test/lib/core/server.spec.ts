@@ -1,15 +1,17 @@
+/* eslint-disable max-len */
+import request from 'supertest'
+import { createConnection } from 'typeorm'
+
 import { config } from '../../fixture/config'
 import { Server } from '../../../lib/core/server'
-import request from 'supertest'
 import { Container } from '../../../lib/core/container'
 import { SampleService } from '../../fixture/services/sampleService'
-import { createConnection } from 'typeorm'
 
 describe('Server', () => {
     beforeAll(async () => {
         const server = new Server(config)
         const connection = await createConnection(config.database)
-        server.init(connection)
+        await server.init(connection)
     })
 
     describe('loads the controller and handle dependecy injection', () => {

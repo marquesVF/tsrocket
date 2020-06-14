@@ -9,7 +9,6 @@ import {
 } from '../../../lib/core/decorators'
 import { RestController } from '../../../lib/core/rest-controller'
 import { SampleService } from '../services/sampleService'
-
 import { FindDto } from '../dto/sampleDto'
 
 @Controller()
