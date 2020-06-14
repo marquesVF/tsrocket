@@ -1,7 +1,7 @@
 import { Request } from 'express'
 import { validateSync } from 'class-validator'
 
-import { ArgMetadata, InputFieldMetadata } from '../metadata/types'
+import { ArgMetadata, FieldMetadata } from '../metadata/types'
 import {
     ValidationResult,
     ValidationError,
@@ -13,7 +13,7 @@ import {
  */
 export function validateRequestParameters(
     req: Request,
-    fields: InputFieldMetadata[],
+    fields: FieldMetadata[],
     argMetadatas: ArgMetadata[]
 ): ValidationResult {
     if (argMetadatas.length === 0) { return { parameters: [{}] } }

@@ -254,30 +254,30 @@ We can use `@Get` to indicate a HTTP *get* request handler, `@Post` for a *post*
 
 ### Request handler argument validator 
 
-We can decorate DTO class properties to validate and make sure that the controller handlers receive the expected data from the request. The `@InputField` is used to indicate an DTO attribute. We can also use [class-validator](https://github.com/typestack/class-validator) decorators, such as `IsString` and `IsEmail` for instance.
+We can decorate DTO class properties to validate and make sure that the controller handlers receive the expected data from the request. The `@Field` is used to indicate an DTO attribute. We can also use [class-validator](https://github.com/typestack/class-validator) decorators, such as `IsString` and `IsEmail` for instance.
 
 If we need to process an incoming data, we can pass a function in the `transform` option.
 
 ```typescript
 // src/dtos/user.ts
-import { InputField } from 'tsrocket'
+import { Field } from 'tsrocket'
 import { IsEmail, IsString, IsDate } from 'class-validator'
 
 export class UserDto {
 
-    @InputField()
+    @Field()
     @IsString()
     name: string
 
-    @InputField()
+    @Field()
     @IsEmail()
     email: string
 
-    @InputField({ transform: (value: string) => new Date(value) })
+    @Field({ transform: (value: string) => new Date(value) })
     @IsDate()
     birthDate: Date
 
-    @InputField({ nullable: true })
+    @Field({ nullable: true })
     @IsString()
     lastName?:string
 

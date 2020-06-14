@@ -1,4 +1,4 @@
-import { InputField } from 'tsrocket'
+import { Field } from 'tsrocket'
 
 {{#if validatorImports}}
 import { {{validatorImports}} } from 'class-validator'
@@ -7,10 +7,9 @@ import { {{validatorImports}} } from 'class-validator'
 export class {{name}}Dto {
 
     {{#each fields}}
-    @InputField({{{this.fieldOptions}}})
+    @Field({{{this.fieldOptions}}})
     @{{this.validator}}()
     {{this.name}}{{#if this.nullable}}?{{/if}}: {{this.type}}
 
     {{/each}}
 }
-

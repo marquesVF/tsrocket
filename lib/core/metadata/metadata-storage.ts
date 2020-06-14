@@ -9,12 +9,13 @@ import { Logger } from '../../logger'
 import { getMilliseconds } from '../../utils/time'
 import { Server } from '../server'
 import { ResponseInterceptor } from '../../types'
+import { mapResponse } from '../utils/map-response'
 
 import {
     ControllerMetadata,
     RouteMetadata,
     ArgMetadata,
-    InputFieldMetadata,
+    FieldMetadata,
     ResponseInterceptorMetadata
 } from './types'
 
@@ -24,7 +25,7 @@ export class MetadataStorage {
     private controllers: Record<string, ControllerMetadata> = {}
     private routes: RouteMetadata[] = []
     private args: ArgMetadata[] = []
-    private fields: InputFieldMetadata[] = []
+    private fields: FieldMetadata[] = []
     private controllerResponseInterceptors: ResponseInterceptorMetadata[] = []
 
     private findResponseInterceptor(controller: string): ResponseInterceptor {
@@ -41,7 +42,7 @@ export class MetadataStorage {
     }
 
     private buildRoute(route: RouteMetadata) {
-        const { controller, propertyKey, path, method } = route
+        const { controller, propertyKey, path, method, mapper } = route
         const router = Router()
         const {
             path: controllerPath,
@@ -71,7 +72,11 @@ export class MetadataStorage {
                 const result
                     = await controllerObject[propertyKey](...parameters)
                 const timeConsumed = getMilliseconds() - processStart
-                const response = interceptor.intercept(result)
+
+                const mappedResponse = mapper
+                    ? mapResponse(mapper, this.fields, result)
+                    : result
+                const response = interceptor.intercept(mappedResponse)
 
                 // eslint-disable-next-line max-len
                 Logger.info(`[${method}] request to ${requestDestination} '${path}' ${timeConsumed} ms`)
@@ -104,7 +109,7 @@ export class MetadataStorage {
         this.args.push(data)
     }
 
-    storeInputField(data: InputFieldMetadata) {
+    storeField(data: FieldMetadata) {
         this.fields.push(data)
     }
 

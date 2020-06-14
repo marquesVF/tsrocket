@@ -1,15 +1,15 @@
-import { InputField } from "../../../lib/core/decorators"
+import { Field } from "../../../lib/core/decorators"
 
 export class FindDto {
 
-    @InputField()
+    @Field()
     id: string
 
 }
 
 export class SampleDto {
 
-    @InputField()
+    @Field()
     name: string
 
 }
