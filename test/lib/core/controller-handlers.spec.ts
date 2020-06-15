@@ -4,12 +4,12 @@ import { createConnection } from 'typeorm'
 import { config } from '../../fixture/config'
 import { Server } from '../../../lib/core/server'
 import { Container } from '../../../lib/core/container'
-import { SampleService } from '../../fixture/services/sampleService'
+import { SampleService } from '../../fixture/services/sample'
 import {
     DefaultResponseInterceptor
 } from '../../../lib/core/defaults/default-response-interceptor'
 
-describe('Server', () => {
+describe('Controller handlers', () => {
     beforeAll(async () => {
         const server = new Server(config)
         const connection = await createConnection(config.database)

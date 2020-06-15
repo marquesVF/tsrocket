@@ -7,11 +7,11 @@ import { Server } from '../../../lib/core/server'
 import {
     DefaultResponseInterceptor
 } from '../../../lib/core/defaults/default-response-interceptor'
-import { SampleDto } from '../../fixture/dto/sampleDto'
+import { SampleDto } from '../../fixture/dto/sample'
 import { ErrorType } from '../../../lib/core/types/validation'
 import { ValidationError } from '../../../lib/core/errors/validation'
 
-describe('Complex Server', () => {
+describe('Controller body validation', () => {
     beforeAll(async () => {
         const server = new Server(config)
         const connection = await createConnection(config.database)
