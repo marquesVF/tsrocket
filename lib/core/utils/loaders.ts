@@ -10,7 +10,7 @@ export async function loadControllers(controllers: string[]) {
             const module = await import(relPath)
             const klass = module.default
 
-            Logger.debug(`${klass.name} loaded`)
+            Logger.info(`${klass.name} loaded`)
 
             new klass()
         }
