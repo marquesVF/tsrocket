@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import request from 'supertest'
 import { createConnection } from 'typeorm'
 
@@ -6,6 +5,9 @@ import { config } from '../../fixture/config'
 import { Server } from '../../../lib/core/server'
 import { Container } from '../../../lib/core/container'
 import { SampleService } from '../../fixture/services/sampleService'
+import {
+    DefaultResponseInterceptor
+} from '../../../lib/core/defaults/default-response-interceptor'
 
 describe('Server', () => {
     beforeAll(async () => {
@@ -16,32 +18,33 @@ describe('Server', () => {
 
     describe('loads the controller and handle dependecy injection', () => {
         const service: SampleService = Container.get(SampleService)
+        const defaultInterceptor = new DefaultResponseInterceptor()
 
         it('should handle GET http request', async () => {
-            const response = { data: service.foo() }
+            const response = defaultInterceptor.intercept(service.foo())
             const { status, body } = await request(Server.httpServer).get('/')
 
             expect(status).toEqual(200)
             expect(body).toEqual(response)
         })
 
-        it('should pass parameters if argument is decorated and handle', async () => {
-            const response = { data: service.find('zebra') }
+        it('should process and validate the params argument', async () => {
+            const response = defaultInterceptor
+                .intercept(service.find('zebra'))
             const { body } = await request(Server.httpServer).get('/zebra')
 
             expect(body).toEqual(response)
         })
 
-        it('should handle PUT http request', async () => {
-            const { status } = await request(Server.httpServer).put('/zebra')
+        // eslint-disable-next-line max-len
+        it('should handle PUT http request with the id parameter as string', async () => {
+            const response = defaultInterceptor
+                .intercept('put method with zebra')
+            const { status, body } = await request(Server.httpServer)
+                .put('/zebra')
 
             expect(status).toEqual(200)
-        })
-
-        it('should handle POST http request', async () => {
-            const { status } = await request(Server.httpServer).post('/')
-
-            expect(status).toEqual(201)
+            expect(body).toEqual(response)
         })
 
         it('should handle DELETE http request', async () => {

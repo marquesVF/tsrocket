@@ -53,6 +53,8 @@ export class MetadataStorage {
             metadata.propertyKey === propertyKey
                 && metadata.controller === controller)
 
+        const interceptor = this.findResponseInterceptor(controller)
+
         const controllerObject: RestController = Container.get(target)
         const handler = async (req: Request, res: Response) => {
             const paramValidator
@@ -61,12 +63,10 @@ export class MetadataStorage {
                 = paramValidator.validate()
 
             if (errors) {
-                res.status(400).send({ errors })
+                res.status(400).send(interceptor.intercept(undefined, errors))
 
                 return
             }
-
-            const interceptor = this.findResponseInterceptor(controller)
 
             const requestDestination = controllerObject.constructor.name
             try {
@@ -87,7 +87,7 @@ export class MetadataStorage {
             } catch (err) {
                 // eslint-disable-next-line max-len
                 Logger.error(`processing the request to ${requestDestination} '${path}': ${err}`)
-                const response = interceptor.intercept(undefined, err)
+                const response = interceptor.intercept(undefined, [err])
 
                 res.status(500).send(response)
             }

@@ -19,11 +19,11 @@
     "definition": "./lib/index.d.ts"
   },
   "scripts": {
-    "watch": "tsc --watch",
+    "watch": "tsc -p tsconfig.build.json --watch",
     "build": "tsc -p tsconfig.build.json && cp -rf lib/cli/templates dist/cli",
     "prepare": "npm run build",
     "lint": "eslint --ext .ts --cache lib",
-    "test": "jest --detectOpenHandles",
+    "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage"
   },

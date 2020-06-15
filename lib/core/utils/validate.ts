@@ -4,10 +4,13 @@ import { validateSync } from 'class-validator'
 
 import { ArgMetadata, FieldMetadata, ClassType } from '../metadata/types'
 import {
-    ValidationResult,
-    ValidationError,
-    ErrorType
+    ValidationResult
 } from '../types/validation'
+import {
+    ValidationError,
+    MissingFieldError,
+    TypeValidationError
+} from '../errors/validation'
 
 import { fieldFilter } from './field-filter'
 
@@ -36,10 +39,9 @@ export class RequestParamsValidator {
                 : reqArgs[field.propertyKey]
 
             if (!nullable && value === undefined) {
-                this.errs.push({
-                    type: ErrorType.MissingField,
-                    message: `'${propertyKey}' field is missing`
-                })
+                this.errs.push(
+                    new MissingFieldError(`'${propertyKey}' field is missing`)
+                )
             }
 
             if (options?.type) {
@@ -71,10 +73,8 @@ export class RequestParamsValidator {
             }
         })
 
-        descriptions.forEach(des => this.errs.push({
-            type: ErrorType.TypeValidation,
-            message: des
-        }))
+        descriptions.forEach(des =>
+            this.errs.push(new TypeValidationError(des)))
 
         return argsObj
     }
