@@ -28,4 +28,15 @@ export class SampleDto extends BaseDto {
     @IsNumber()
     amount: number
 
+    // eslint-disable-next-line max-len
+    @Field({ nullable: true, transform: (value: string) => value.split('-') })
+    documentNumber?: string[]
+
+}
+
+export class SampleResponseDto {
+
+    @Field()
+    name: string
+
 }

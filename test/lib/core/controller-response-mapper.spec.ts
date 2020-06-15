@@ -8,14 +8,14 @@ import {
 } from '../../fixture/controllers/response-interceptor'
 import { SampleDto } from '../../fixture/dto/sample'
 
-describe('Controller response interceptor', () => {
+describe('Controller response mapper', () => {
     beforeAll(async () => {
         const server = new Server(config)
         const connection = await createConnection(config.database)
         await server.init(connection)
     })
 
-    describe('using a custom response interceptor', () => {
+    describe('using a response mapper', () => {
         const customInterceptor = new CustomResponseInterceptor()
 
         it('should decorate the response accordingly', async () => {
@@ -24,9 +24,12 @@ describe('Controller response interceptor', () => {
                 something: 'foo',
                 amount: 3
             }
-            const response = customInterceptor.intercept(payload)
+            const decoratedResponse = {
+                name: 'sample'
+            }
+            const response = customInterceptor.intercept(decoratedResponse)
             const { status, body } = await request(Server.httpServer)
-                .post('/response-interceptor')
+                .post('/complex/decorated')
                 .send(payload)
 
             expect(status).toEqual(201)

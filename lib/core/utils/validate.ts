@@ -32,24 +32,25 @@ export class RequestParamsValidator {
 
         targetFields.forEach(field => {
             const { propertyKey, options } = field
-            const nullable = options?.nullable ?? false
+            const nullable = options?.nullable || false
 
-            const value = options && options.transform
-                ? options.transform(reqArgs[field.propertyKey])
-                : reqArgs[field.propertyKey]
-
+            const value = reqArgs[field.propertyKey]
             if (!nullable && value === undefined) {
                 this.errs.push(
                     new MissingFieldError(`'${propertyKey}' field is missing`)
                 )
             }
 
-            if (options?.type) {
+            const transformedValue = value && options && options.transform
+                ? options.transform(reqArgs[field.propertyKey])
+                : value
+
+            if (!nullable && options?.type) {
                 const nestedMapper = options.type
                 argsObj[field.propertyKey] = this
-                    .validateTargetFields(nestedMapper, value)
+                    .validateTargetFields(nestedMapper, transformedValue)
             } else {
-                argsObj[field.propertyKey] = value
+                argsObj[field.propertyKey] = transformedValue
             }
         })
 

@@ -78,5 +78,23 @@ describe('Controller body validation', () => {
                 expect(body).toEqual(response)
             })
         })
+
+        describe('field transformation', () => {
+            const payload = {
+                name: 'sample',
+                something: 'foo',
+                amount: 3,
+                documentNumber: '1111-55'
+            }
+
+            it('should apply the `transform` method', async () => {
+                const { status, body } = await request(Server.httpServer)
+                    .post('/complex')
+                    .send(payload)
+
+                expect(status).toEqual(201)
+                expect(body.data.documentNumber).toEqual(['1111', '55'])
+            })
+        })
     })
 })
