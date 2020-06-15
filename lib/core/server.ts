@@ -1,10 +1,10 @@
+import * as glob from 'glob'
 import express from 'express'
 import { Connection } from 'typeorm'
 
 import { ServerConfiguration, ResponseInterceptor } from '../types'
 import { Logger } from '../logger'
 
-import { loadControllers } from './utils/loaders'
 import { getMetadataStorage } from './metadata/metadata-storage'
 import { Container } from './container'
 import {
@@ -21,12 +21,27 @@ export class Server {
         this.config = config
     }
 
+    private async loadControllers() {
+        for (const controller of this.config.controllers) {
+            const filePath = glob.sync(controller)
+            for (const path of filePath) {
+                const relPath = `${process.cwd()}/${path.replace('.ts', '')}`
+                const module = await import(relPath)
+                const klass = module.default
+
+                Logger.debug(`loading ${klass.name}`)
+
+                new klass()
+            }
+        }
+    }
+
     async init(connection: Connection) {
         Container.set('connection', connection)
         Server.httpServer.use(express.json())
         Server.httpServer.use(express.urlencoded({ extended: true }))
 
-        await loadControllers(this.config.constrollers)
+        await this.loadControllers()
         getMetadataStorage().buildRoutes(Server.httpServer)
     }
 

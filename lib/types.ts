@@ -2,7 +2,7 @@ import { ConnectionOptions } from 'typeorm'
 
 export type ServerConfiguration = {
     port: number
-    constrollers: string[]
+    controllers: string[]
     database: ConnectionOptions
 }
 
