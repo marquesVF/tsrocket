@@ -1,80 +1,106 @@
+/* eslint-disable no-useless-constructor */
 import { Request } from 'express'
 import { validateSync } from 'class-validator'
 
-import { ArgMetadata, InputFieldMetadata } from '../metadata/types'
+import { ArgMetadata, FieldMetadata, ClassType } from '../metadata/types'
 import {
-    ValidationResult,
-    ValidationError,
-    ErrorType
+    ValidationResult
 } from '../types/validation'
+import {
+    ValidationError,
+    MissingFieldError,
+    TypeValidationError
+} from '../errors/validation'
 
-/**
- * This method verifies if all the required fields are included in a request
- */
-export function validateRequestParameters(
-    req: Request,
-    fields: InputFieldMetadata[],
-    argMetadatas: ArgMetadata[]
-): ValidationResult {
-    if (argMetadatas.length === 0) { return { parameters: [{}] } }
+import { fieldFilter } from './field-filter'
 
-    const errs: ValidationError[] = []
-    const returnedArguments: any[] = []
+export class RequestParamsValidator {
 
-    argMetadatas.forEach(arg => {
-        const { type, target, index  } = arg
+    private readonly errs: ValidationError[] = []
+    private readonly returnedArguments: any[] = []
 
-        const targetFields = fields.filter(metadata =>
-            metadata.target.constructor.name === target?.name)
+    constructor(
+        private readonly req: Request,
+        private readonly fields: FieldMetadata[],
+        private readonly argMetadatas: ArgMetadata[]
+    ) {}
 
-        const reqArgs = req[type]
-        const argsObj = target
-            ? new target()
-            // FIX-ME it may be error prone
-            : reqArgs[Object.keys(reqArgs)[index]]
+    private validateTargetFields(target: ClassType, reqArgs: any): any {
+        const argsObj = new target()
+        const targetFields = this.fields
+            .filter(field => fieldFilter(field, target))
 
         targetFields.forEach(field => {
             const { propertyKey, options } = field
-            const nullable = options?.nullable ?? false
-            const value = options && options.transform
-                ? options.transform(reqArgs[field.propertyKey])
-                : reqArgs[field.propertyKey]
+            const nullable = options?.nullable || false
 
+            const value = reqArgs[field.propertyKey]
             if (!nullable && value === undefined) {
-                errs.push({
-                    type: ErrorType.MissingField,
-                    message: `'${propertyKey}' field is missing`
-                })
+                this.errs.push(
+                    new MissingFieldError(`'${propertyKey}' field is missing`)
+                )
             }
 
-            argsObj[field.propertyKey] = value
+            const transformedValue = value && options && options.transform
+                ? options.transform(reqArgs[field.propertyKey])
+                : value
+
+            if (!nullable && options?.type) {
+                const nestedMapper = options.type
+                argsObj[field.propertyKey] = this
+                    .validateTargetFields(nestedMapper, transformedValue)
+            } else {
+                argsObj[field.propertyKey] = transformedValue
+            }
         })
 
-        if (target) {
-            const errors = validateSync(
-                argsObj,
-                { forbidUnknownValues: true, skipMissingProperties: true }
-            )
-            const descriptions: string[] = []
-            errors.map(err => {
-                const { constraints } = err
-                if (constraints) {
-                    Object.keys(constraints).forEach(key => {
-                        descriptions.push(constraints[key])
-                    })
-                }
-            })
+        const errors = validateSync(
+            argsObj,
+            { forbidUnknownValues: true, skipMissingProperties: true }
+        )
+        const descriptions: string[] = []
+        errors.map(err => {
+            const { constraints } = err
+            if (constraints) {
+                Object.keys(constraints).forEach(key => {
+                    const description = constraints[key]
 
-            descriptions.forEach(des => errs.push({
-                type: ErrorType.TypeValidation,
-                message: des
-            }))
-        }
+                    // It should ignore if the DTO does not use class-validation
+                    // eslint-disable-next-line max-len
+                    if (description !== 'an unknown value was passed to the validate function') {
+                        descriptions.push(description)
+                    }
+                })
+            }
+        })
 
-        returnedArguments[index] = argsObj
-    })
+        descriptions.forEach(des =>
+            this.errs.push(new TypeValidationError(des)))
 
-    const returnedErrors = errs.length > 0 ? errs : undefined
+        return argsObj
+    }
 
-    return { parameters: returnedArguments, errors: returnedErrors }
+    /**
+     * This method verifies if all the required fields are included in a request
+     */
+    validate(): ValidationResult {
+        if (this.argMetadatas.length === 0) { return { parameters: [{}] } }
+
+        this.argMetadatas.forEach(arg => {
+            const { type, target, index  } = arg
+
+            const reqArgs = this.req[type]
+            const argsObj = target
+                ? this.validateTargetFields(target, reqArgs)
+                // FIX-ME it may be error prone
+                : reqArgs[Object.keys(reqArgs)[index]]
+
+            this.returnedArguments[index] = argsObj
+        })
+
+        const returnedErrors = this.errs.length > 0 ? this.errs : undefined
+
+        return { parameters: this.returnedArguments, errors: returnedErrors }
+    }
+
 }

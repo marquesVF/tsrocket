@@ -1,6 +1,6 @@
 {
   "name": "tsrocket",
-  "version": "0.0.11",
+  "version": "0.1.0",
   "description": "Ease up web APIs development in Typescript with scaffolding, dependency injection and some sweet decorators",
   "files": [
     "bin",
@@ -19,11 +19,11 @@
     "definition": "./lib/index.d.ts"
   },
   "scripts": {
-    "watch": "tsc --watch",
-    "build": "tsc && cp -rf lib/cli/templates dist/cli",
+    "watch": "tsc -p tsconfig.build.json --watch",
+    "build": "tsc -p tsconfig.build.json && cp -rf lib/cli/templates dist/cli",
     "prepare": "npm run build",
     "lint": "eslint --ext .ts --cache lib",
-    "test": "jest --detectOpenHandles",
+    "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage"
   },

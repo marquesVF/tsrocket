@@ -1,9 +1,9 @@
 # tsrocket 🚀
-Ease up web APIs development in Typescript with scaffolding, dependency injection and some sweet decorators 🍭
+Framework for web APIs development in Typescript with scaffolding, dependency injection and some sweet decorators 🍭
 
 ## What's tsrocket?
 
-`tsrocket` is a lightweight REST framework with dependecy injection, CLI and code scaffolding. The ideia is to offer a well defined project strucuture for API development. A `tsrocket` project has four layers: controllers, models/DTOs, repositories and services.
+`tsrocket` is a lightweight REST framework with dependecy injection, CLI and code scaffolding. The ideia is to offer a well defined project strucuture for API development. A `tsrocket` project has four layers: controller, model/DTO, repository and service.
 
 ### Controller layer
 
@@ -13,7 +13,7 @@ The Controller layer is responsible for handling incomming HTTP requests and pro
 
 The Model layer represents the domain model. In tsrcoket, database-backed model classes are [TypeORM's](https://github.com/typeorm/typeorm) [entities](https://typeorm.io/#/entities).
 
-DTO stands for Data Transfer Object. In `tsrocket`, DTOs represent what the controller should expect as inputs in the requests.
+DTO stands for Data Transfer Object. In `tsrocket`, DTOs represent what the controller should expect as inputs in the requests. Using DTOs, we can validate if the controller is receiving the data it's expecting, avoiding runtime errors.
 
 ### Repository layer
 
@@ -71,7 +71,7 @@ async function main() {
 export default main()
 ```
 
-This is the main entrance of our application and we can run it in development mode with the command `npm run dev`. It basically creates a database connection and tells `tsrocket` to setup your application so it can be served.
+This is the main entrance of our application and we can run it in development mode with the command `npm run start:dev`. It basically creates a database connection and tells `tsrocket` to setup your application so it can be served. `tsrocket` follows the idea of convention over configuration. For exemple, by default, `tsrocket` expects that the application controller are located in the folder `src/controllers`. So it will automatically load them and register the routes.
 
 ```bash
 $ cd sample-api
@@ -134,9 +134,7 @@ After we generate the User model and its repository. We can use `tsrocket` cli t
 import { Service } from 'tsrocket'
 
 @Service()
-export default class UserService {
-
-}
+export default class UserService { }
 ```
 
 We can use use the `@InjectRepository` decorator to inject the user repository and `@Inject` to inject another service.
@@ -159,9 +157,11 @@ export default class UserService {
 }
 ```
 
-It's also possible to use a factory to dynamically use a instance when injecting a service. To do so, we need to implement the `InjectableFactory` interface. This is useful when we want to use mocked services when testing for instance:
+It's also possible to use a factory to dynamically use a instance when injecting a service. To do so, we need to implement the `InjectableFactory` interface. This is useful when we want to use mocked services when testing for example:
 
 ```typescript
+import { InjectableFactory, Service } from 'tsrocket'
+
 class UserServiceFactory implements InjectableFactory {
     getInstance(): Object {
         return process.env['ENV'] === 'test'
@@ -246,7 +246,7 @@ export default class UserController extends RestController {
 }
 ```
 
-As we can se, `tsrocket` generated a controller with the user service already injected with the `@Inject` decorator. The first argument of the `tsr g controller` command is the name of the controller and any following argument will be treated as dependency injection by the `tsrocket` scaffold.
+As we can see, `tsrocket` generated a controller with the user service already injected with the `@Inject` decorator. The first argument of the `tsr g controller` command is the name of the controller and any following argument will be treated as dependency injection by the `tsrocket` scaffold.
 
 ### Request handler decorators
 
@@ -254,23 +254,30 @@ We can use `@Get` to indicate a HTTP *get* request handler, `@Post` for a *post*
 
 ### Request handler argument validator 
 
-We can decorate DTO class properties to validate and make sure that the controller handlers receive the expected data from the request. The `@InputField` is used to indicate an DTO attribute. We can also use [class-validator](https://github.com/typestack/class-validator) decorators, such as `IsString` and `IsEmail` for instance.
+We can decorate DTO class properties to validate and make sure that the controller handlers receive the expected data from the request. The `@Field` is used to indicate an DTO attribute. We can also use [class-validator](https://github.com/typestack/class-validator) decorators, such as `IsString` and `IsEmail` for instance.
+
+If we need to process an incoming data, we can pass a function in the `transform` option.
 
 ```typescript
 // src/dtos/user.ts
-import { InputField } from 'tsrocket'
+import { Field } from 'tsrocket'
+import { IsEmail, IsString, IsDate } from 'class-validator'
 
 export class UserDto {
 
-    @InputField()
+    @Field()
     @IsString()
     name: string
 
-    @InputField()
+    @Field()
     @IsEmail()
     email: string
 
-    @InputField({ nullable: true })
+    @Field({ transform: (value: string) => new Date(value) })
+    @IsDate()
+    birthDate: Date
+
+    @Field({ nullable: true })
     @IsString()
     lastName?:string
 
@@ -283,7 +290,7 @@ If we need to, we can run `npm run orm` to execute `typeorm` commands. For insta
 
 ### Response Interceptor
 
-By default, `tsrocket` uses the following structure as request response:
+By default, `tsrocket` uses the following structure to respond all the requests:
 
 ```json
 {
@@ -294,7 +301,7 @@ By default, `tsrocket` uses the following structure as request response:
 
 We can change this behaviour in two different ways: controller and application level.
 
-We need to inplement a ResponseInterceptor class:
+The first step is to implement a ResponseInterceptor class:
 
 ```typescript
 class CustomInterceptor implements ResponseInterceptor {
@@ -325,15 +332,76 @@ So the response will be:
 To apply this interceptor to a specific controller, we can use the `@UseResponseInterceptor` decorator:
 
 ```typescript
-@UseResponseInterceptor(new CustomInterceptor())
+// src/controllers/cars.ts
+@UseResponseInterceptor(CustomInterceptor)
 @Controller('/cars')
 export default class CarController extends RestController { }
 ```
 
-Or we can use the `CustomInterceptor` in the application level:
+Note that, we only need to pass the class as argument. Internally, `tsrocket` uses its dependency injection mechanism.
+
+Or we can use the `CustomInterceptor` in the application level. In this case, the interceptor will be attached to every controller:
 
 ```typescript
 // src/server.ts
 const server = new Server(config)
-server.useResponseInterceptor(new CustomInterceptor())
+server.useResponseInterceptor(CustomInterceptor)
+```
+
+### Response Mapper
+
+Sometimes we may need to filter what the controller will send as response. In `tsrocket` it's quite easy and straightforward. We only need to implement a DTO class. For example, suppose we have a user model:
+
+```typescript
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
+
+@Entity()
+export class User {
+
+    @PrimaryGeneratedColumn('uuid')
+    id: string
+
+    @Column()
+    name: string
+
+    @Column()
+    email: string
+
+    @Column()
+    password: string
+
+}
+```
+
+We can see that `User` has multiple properties but we want to return only the name and email. So the resulting DTO would be:
+
+```typescript
+import { Field } from 'tsrocket'
+
+export class UserResponseDto {
+
+    @Field()
+    name: string
+
+    @Field()
+    email: string
+
+}
+```
+
+To map a controller handler response we only need to pass the DTO class as parameter to the HTTP method decorator. `@Get` in the example below. The handler response can be either a object or an array of objects.
+
+```typescript
+@Controller('/users')
+export class UserController {
+
+    @Inject(UserService)
+    private readonly userService: UserService
+
+    @Get('/', UserResponseDto)
+    listUsers() {
+        return this.userService.find()
+    }
+
+}
 ```

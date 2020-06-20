@@ -6,9 +6,9 @@
   "author": "{{ appAuthor }}",
   "license": "{{ appLicence }}",
   "scripts": {
-    "serve": "node build/server.js",
     "build": "tsc",
-    "start": "ts-node src/index.ts",
+    "start:dev": "ts-node-dev --respawn --transpileOnly src/server.ts",
+    "start:prod": "node build/server.js",
     "dev": "ts-node-dev --respawn --transpileOnly src/server.ts",
     "orm": "ts-node node_modules/typeorm/cli",
     "test": "jest --detectOpenHandles --passWithNoTests",
@@ -18,7 +18,7 @@
   "dependencies": {
     "class-validator": "0.12.2",
     "reflect-metadata": "0.1.13",
-    "tsrocket": "0.0.11",
+    "tsrocket": "0.1.0",
     "typeorm": "0.2.24"
   },
   "devDependencies": {

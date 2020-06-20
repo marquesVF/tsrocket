@@ -5,15 +5,15 @@ import {
     Params,
     Put,
     Delete,
-    Post
+    Post,
+    Body
 } from '../../../lib/core/decorators'
 import { RestController } from '../../../lib/core/rest-controller'
-import { SampleService } from '../services/sampleService'
-
-import { FindDto } from '../dto/sampleDto'
+import { SampleService } from '../services/sample'
+import { FindDto, SampleDto } from '../dto/sample'
 
 @Controller()
-export default class SampleController extends RestController {
+export default class HandlersController extends RestController {
 
     @Inject(SampleService)
     private readonly sampleService: SampleService
@@ -29,12 +29,16 @@ export default class SampleController extends RestController {
     }
 
     @Put('/:id')
-    update() { return 'Hello World' }
+    update(@Params() id: string) {
+        return `put method with ${id}`
+    }
 
     @Post('/')
-    create() { return 'Hello World' }
+    create(@Body(SampleDto) sampleDto: SampleDto) {
+        return sampleDto
+    }
 
     @Delete('/:id')
-    delete() { return 'Hello World' }
+    delete() { return }
 
 }

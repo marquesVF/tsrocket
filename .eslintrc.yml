@@ -60,7 +60,6 @@ rules:
   indent: [error, 4, { SwitchCase: 1, CallExpression: { arguments: first } }]
   max-len: [error, { code: 80, ignoreComments: true }]
   spaced-comment: error
-  capitalized-comments: [error, always, { ignoreInlineComments: true }]
   no-unused-expressions: error
   no-trailing-spaces: error
   comma-style: [error, last]
