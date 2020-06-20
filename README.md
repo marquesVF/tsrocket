@@ -1,5 +1,5 @@
 # tsrocket 🚀
-Ease up web APIs development in Typescript with scaffolding, dependency injection and some sweet decorators 🍭
+Framework for web APIs development in Typescript with scaffolding, dependency injection and some sweet decorators 🍭
 
 ## What's tsrocket?
 
@@ -71,7 +71,7 @@ async function main() {
 export default main()
 ```
 
-This is the main entrance of our application and we can run it in development mode with the command `npm run dev`. It basically creates a database connection and tells `tsrocket` to setup your application so it can be served.
+This is the main entrance of our application and we can run it in development mode with the command `npm run start:dev`. It basically creates a database connection and tells `tsrocket` to setup your application so it can be served. `tsrocket` follows the idea of convention over configuration. For exemple, by default, `tsrocket` expects that the application controller are located in the folder `src/controllers`. So it will automatically load them and register the routes.
 
 ```bash
 $ cd sample-api
@@ -290,7 +290,7 @@ If we need to, we can run `npm run orm` to execute `typeorm` commands. For insta
 
 ### Response Interceptor
 
-By default, `tsrocket` uses the following structure as request response:
+By default, `tsrocket` uses the following structure to respond all the requests:
 
 ```json
 {
@@ -301,7 +301,7 @@ By default, `tsrocket` uses the following structure as request response:
 
 We can change this behaviour in two different ways: controller and application level.
 
-We need to inplement a ResponseInterceptor class:
+The first step is to implement a ResponseInterceptor class:
 
 ```typescript
 class CustomInterceptor implements ResponseInterceptor {
@@ -332,6 +332,7 @@ So the response will be:
 To apply this interceptor to a specific controller, we can use the `@UseResponseInterceptor` decorator:
 
 ```typescript
+// src/controllers/cars.ts
 @UseResponseInterceptor(CustomInterceptor)
 @Controller('/cars')
 export default class CarController extends RestController { }
@@ -345,4 +346,62 @@ Or we can use the `CustomInterceptor` in the application level. In this case, th
 // src/server.ts
 const server = new Server(config)
 server.useResponseInterceptor(CustomInterceptor)
+```
+
+### Response Mapper
+
+Sometimes we may need to filter what the controller will send as response. In `tsrocket` it's quite easy and straightforward. We only need to implement a DTO class. For example, suppose we have a user model:
+
+```typescript
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
+
+@Entity()
+export class User {
+
+    @PrimaryGeneratedColumn('uuid')
+    id: string
+
+    @Column()
+    name: string
+
+    @Column()
+    email: string
+
+    @Column()
+    password: string
+
+}
+```
+
+We can see that `User` has multiple properties but we want to return only the name and email. So the resulting DTO would be:
+
+```typescript
+import { Field } from 'tsrocket'
+
+export class UserResponseDto {
+
+    @Field()
+    name: string
+
+    @Field()
+    email: string
+
+}
+```
+
+To map a controller handler response we only need to pass the DTO class as parameter to the HTTP method decorator. `@Get` in the example below. The handler response can be either a object or an array of objects.
+
+```typescript
+@Controller('/users')
+export class UserController {
+
+    @Inject(UserService)
+    private readonly userService: UserService
+
+    @Get('/', UserResponseDto)
+    listUsers() {
+        return this.userService.find()
+    }
+
+}
 ```
