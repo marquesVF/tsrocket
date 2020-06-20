@@ -26,4 +26,9 @@ export default class BodyValidationController extends RestController {
         return sampleDto
     }
 
+    @Post('/decorated-array', SampleResponseDto)
+    decoratedArray(@Body(SampleDto) sampleDto: SampleDto) {
+        return [sampleDto]
+    }
+
 }

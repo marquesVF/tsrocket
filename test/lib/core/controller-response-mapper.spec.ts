@@ -35,5 +35,23 @@ describe('Controller response mapper', () => {
             expect(status).toEqual(201)
             expect(body).toEqual(response)
         })
+
+        it('should handle an array reponse', async () => {
+            const payload: SampleDto = {
+                name: 'sample',
+                something: 'foo',
+                amount: 3
+            }
+            const decoratedResponse = [{
+                name: 'sample'
+            }]
+            const response = customInterceptor.intercept(decoratedResponse)
+            const { status, body } = await request(Server.httpServer)
+                .post('/complex/decorated-array')
+                .send(payload)
+
+            expect(status).toEqual(201)
+            expect(body).toEqual(response)
+        })
     })
 })
