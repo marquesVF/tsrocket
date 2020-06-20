@@ -36,6 +36,14 @@ describe('Controller handlers', () => {
             expect(body).toEqual(response)
         })
 
+        it('should process and validate the query argument', async () => {
+            const response = defaultInterceptor.intercept({ id: '123' })
+            const { body } = await request(Server.httpServer)
+                .get('/complex?id=123')
+
+            expect(body).toEqual(response)
+        })
+
         // eslint-disable-next-line max-len
         it('should handle PUT http request with the id parameter as string', async () => {
             const response = defaultInterceptor

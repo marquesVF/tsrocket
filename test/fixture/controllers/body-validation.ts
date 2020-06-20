@@ -1,10 +1,12 @@
 import {
     Controller,
     Post,
-    Body
+    Body,
+    Query,
+    Get
 } from '../../../lib/core/decorators'
 import { RestController } from '../../../lib/core/rest-controller'
-import { SampleDto, SampleResponseDto } from '../dto/sample'
+import { SampleDto, SampleResponseDto, FindDto } from '../dto/sample'
 
 @Controller('/complex')
 export default class BodyValidationController extends RestController {
@@ -12,6 +14,11 @@ export default class BodyValidationController extends RestController {
     @Post('/')
     create(@Body(SampleDto) sampleDto: SampleDto) {
         return sampleDto
+    }
+
+    @Get('/')
+    queryTest(@Query(FindDto) findDto: FindDto) {
+        return findDto
     }
 
     @Post('/decorated', SampleResponseDto)
