@@ -1,6 +1,6 @@
 {
   "name": "tsrocket",
-  "version": "0.0.11",
+  "version": "0.1.0",
   "description": "Ease up web APIs development in Typescript with scaffolding, dependency injection and some sweet decorators",
   "files": [
     "bin",
