@@ -1,5 +1,7 @@
 import * as glob from 'glob'
 import express from 'express'
+import helmet from 'helmet'
+import cors from 'cors'
 import { Connection } from 'typeorm'
 
 import { ServerConfiguration, ResponseInterceptor } from '../types'
@@ -40,6 +42,7 @@ export class Server {
         Container.set('connection', connection)
         Server.httpServer.use(express.json())
         Server.httpServer.use(express.urlencoded({ extended: true }))
+        Server.httpServer.use(helmet())
 
         await this.loadControllers()
         getMetadataStorage().buildRoutes(Server.httpServer)
@@ -54,6 +57,10 @@ export class Server {
         interceptor: new (...args: any[]) => ResponseInterceptor
     ) {
         Server.globalResponseInterceptor = Container.get(interceptor)
+    }
+
+    disableCors() {
+        Server.httpServer.use(cors())
     }
 
 }
