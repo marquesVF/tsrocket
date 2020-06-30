@@ -71,7 +71,7 @@ async function main() {
 export default main()
 ```
 
-This is the main entrance of our application and we can run it in development mode with the command `npm run start:dev`. It basically creates a database connection and tells `tsrocket` to setup your application so it can be served. `tsrocket` follows the idea of convention over configuration. For exemple, by default, `tsrocket` expects that the application controller are located in the folder `src/controllers`. So it will automatically load them and register the routes.
+This is the main file of our application and we can run it in development mode with the command `npm run start:dev`. It basically creates a database connection and tells `tsrocket` to setup your application so it can be served.
 
 ```bash
 $ cd sample-api
@@ -82,6 +82,8 @@ info: listening at port 3000
 By default, `tsrocket` uses sqlite as database. We may want to change it to run the application in production. To do so, we can update the `src/config.ts` file. The [TypeORM connection documentation](https://typeorm.io/#/connection-options) might help.
 
 We can run `tsr -help` if we get stuck.
+
+To disable CORS, we can use: `server.disableCors()`.
 
 ### Model and Repository generation
 

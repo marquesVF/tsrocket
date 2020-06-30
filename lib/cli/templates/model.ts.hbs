@@ -5,7 +5,7 @@ import { Entity, {{#if columns}}Column, {{/if}} PrimaryGeneratedColumn, CreateDa
 export default class {{name}} {
 
     @PrimaryGeneratedColumn('uuid')
-    id: number
+    id: string
 
     @CreateDateColumn({ type: 'datetime' })
     createdAt: Date

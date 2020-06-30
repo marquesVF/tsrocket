@@ -1,6 +1,6 @@
 {
   "name": "tsrocket",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Ease up web APIs development in Typescript with scaffolding, dependency injection and some sweet decorators",
   "files": [
     "bin",
@@ -44,15 +44,19 @@
   ],
   "dependencies": {
     "@types/bluebird": "3.5.30",
+    "@types/cors": "2.8.6",
     "@types/express": "4.17.3",
     "@types/glob": "7.1.1",
+    "@types/helmet": "0.0.47",
     "@types/prompt-sync": "4.1.0",
     "@types/yargs": "15.0.4",
     "bluebird": "3.7.2",
     "class-validator": "0.12.2",
+    "cors": "2.8.5",
     "express": "4.17.1",
     "glob": "7.1.6",
     "handlebars": "^4.7.6",
+    "helmet": "3.23.2",
     "pluralize": "8.0.0",
     "prompt-sync": "4.2.0",
     "reflect-metadata": "0.1.13",
