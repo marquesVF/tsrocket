@@ -21,7 +21,7 @@ export function mapResponse(
             const { propertyKey, options } = field
 
             const value = result[propertyKey]
-            if (value) {
+            if (value !== undefined) {
                 if (options?.type) {
                     const nestedMapper = options.type
                     mappedObject[propertyKey]
