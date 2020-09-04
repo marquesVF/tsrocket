@@ -1,42 +1,36 @@
-import { IsString, IsNumber } from 'class-validator'
-
-import { Field } from '../../../lib/core/decorators'
+import { Property, BuildTransformation } from 'objectypes'
 
 export class FindDto {
 
-    @Field()
-    @IsString()
+    @Property()
     id: string
 
 }
 
 export class BaseDto {
 
-    @Field()
-    @IsString()
+    @Property()
     something: string
 
 }
 
 export class SampleDto extends BaseDto {
 
-    @Field()
-    @IsString()
+    @Property()
     name: string
 
-    @Field()
-    @IsNumber()
+    @Property()
     amount: number
 
-    // eslint-disable-next-line max-len
-    @Field({ nullable: true, transform: (value: string) => value.split('-') })
+    @BuildTransformation({ transform: (value: string) => value.split('-') })
+    @Property({ nullable: true })
     documentNumber?: string[]
 
 }
 
 export class SampleResponseDto {
 
-    @Field()
+    @Property()
     name: string
 
 }

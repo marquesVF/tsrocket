@@ -8,7 +8,6 @@ import {
     DefaultResponseInterceptor
 } from '../../../lib/core/defaults/default-response-interceptor'
 import { SampleDto } from '../../fixture/dto/sample'
-import { ErrorType } from '../../../lib/core/types/validation'
 import { ValidationError } from '../../../lib/core/errors/validation'
 
 describe('Controller body validation', () => {

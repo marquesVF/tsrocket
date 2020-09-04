@@ -1,15 +1,14 @@
+import { ClassConstructor } from 'objectypes'
+
 import { Identifier } from '../types/identifier'
 import { ResponseInterceptor } from '../../types'
-import { FieldOptions } from '../types/decorator-types'
-
-export type ResponseMapper = new () => any
 
 export type RouteArguments = {
     target: Object
     propertyKey: string | symbol
     method: RequestMethod
     path: string
-    mapper?: ResponseMapper
+    dto?: ClassConstructor<unknown>
 }
 
 export type RequestMethod = 'get' | 'post' | 'delete' | 'put'
@@ -25,7 +24,7 @@ export type RouteMetadata = {
     path: string
     propertyKey: string
     controller: string
-    mapper?: ResponseMapper
+    dto?: ClassConstructor<unknown>
 }
 
 export type InjectableMetadata = {
@@ -43,12 +42,6 @@ export type ArgMetadata = {
     controller: string
     propertyKey: string
     index: number
-}
-
-export type FieldMetadata = {
-    target: any
-    propertyKey: string
-    options?: FieldOptions
 }
 
 export type ResponseInterceptorMetadata = {

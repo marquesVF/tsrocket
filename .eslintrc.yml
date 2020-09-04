@@ -44,7 +44,6 @@ rules:
   no-template-curly-in-string: error
   no-throw-literal: error
   no-undef-init: error
-  no-useless-constructor: error
   no-var: error
   object-shorthand: error
   one-var: [error, never]
