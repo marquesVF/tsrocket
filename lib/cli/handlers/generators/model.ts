@@ -1,7 +1,7 @@
 import { pascalCase } from 'change-case'
 import { plural } from 'pluralize'
 
-import { generateFile } from '../utils/files'
+import { generateFile } from '../utils/generateFile'
 import {
     Column,
     ModelGeneratorArguments,

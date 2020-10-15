@@ -7,7 +7,7 @@ import {
     CrudArgument
 } from '../types'
 import { importServices } from '../utils/injectable'
-import { generateFile } from '../utils/files'
+import { generateFile } from '../utils/generateFile'
 
 export function generateController(args: InjectableGeneratorArguments) {
     const { name, services, m: generateFromModel } = args

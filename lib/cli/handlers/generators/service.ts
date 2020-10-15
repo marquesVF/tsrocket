@@ -1,7 +1,7 @@
 import { pascalCase } from 'change-case'
 
 import { importServices } from '../utils/injectable'
-import { generateFile } from '../utils/files'
+import { generateFile } from '../utils/generateFile'
 import { InjectableGeneratorArguments, ServiceData } from '../types'
 
 export function generateService(args: InjectableGeneratorArguments) {

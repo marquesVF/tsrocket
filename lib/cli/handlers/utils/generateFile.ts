@@ -10,7 +10,7 @@ export function generateFile(
     name: string,
     domain: Domain,
     templateData: TemplateData
-) {
+): string | undefined {
     const rootPath = `${process.cwd()}/src/${plural(domain)}`
     const filePath = `${rootPath}/${name}.ts`
 
@@ -24,4 +24,6 @@ export function generateFile(
 
     fs.writeFileSync(filePath, compiledTemplate)
     Logger.info(`new ${domain} at ${filePath}`)
+
+    return filePath
 }

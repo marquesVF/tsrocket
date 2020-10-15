@@ -24,15 +24,14 @@ function createDefaultFolders(name: string) {
 
     try {
         fs.mkdirSync(rootPath)
-        process.chdir(rootPath)
 
         createFolders([
-            'services',
-            'models',
-            'repositories',
-            'controllers',
-            'migrations',
-            'dtos'
+            `${rootPath}/services`,
+            `${rootPath}/models`,
+            `${rootPath}/repositories`,
+            `${rootPath}/controllers`,
+            `${rootPath}/migrations`,
+            `${rootPath}/dtos`
         ])
 
         fs.mkdirSync(`${rootPath}/tests`)
