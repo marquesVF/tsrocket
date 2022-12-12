@@ -54,7 +54,7 @@
     "bluebird": "3.7.2",
     "class-validator": "0.12.2",
     "cors": "2.8.5",
-    "express": "4.17.1",
+    "express": "4.17.3",
     "glob": "7.1.6",
     "handlebars": "^4.7.6",
     "helmet": "3.23.2",
