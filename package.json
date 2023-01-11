@@ -52,7 +52,7 @@
     "@types/yargs": "15.0.4",
     "change-case": "4.1.1",
     "bluebird": "3.7.2",
-    "class-validator": "0.12.2",
+    "class-validator": "0.14.0",
     "cors": "2.8.5",
     "express": "4.17.1",
     "glob": "7.1.6",
